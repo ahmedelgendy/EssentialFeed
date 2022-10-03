@@ -13,7 +13,3 @@ struct FeedItem {
     let location: String?
     let imageURL: URL
 }
-
-protocol HTTPClient {
-    func get(from url: URL)
-}
