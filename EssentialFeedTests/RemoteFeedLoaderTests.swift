@@ -71,11 +71,50 @@ class RemoteFeedLoaderTests: XCTestCase {
         }
     }
     
+    func test_load_deliversItemsOn200WithValidJSONItems() {
+        let (sut, client) = makeSUT()
+        let item1 = makeItem(id: UUID(), imageURL: URL(string: "https://anyimage.com")!)
+        let item2 = makeItem(id: UUID(), description: "some des...", location: "loca", imageURL: URL(string: "https://anyimage2.com")!)
+        
+        expect(sut: sut, completeWith: .success([item1.model, item2.model])) {
+            let data = makeItems([item1.json, item2.json])
+            client.complete(withStatusCode: 200, data: data)
+        }
+    }
+    
     private func expect(sut: RemoteFeedLoader, completeWith result: RemoteFeedLoader.Result, when action: () -> Void, file: StaticString = #filePath) {
-        var capturedErrors = [RemoteFeedLoader.Result]()
-        sut.load { capturedErrors.append($0) }
+        var capturedResults = [RemoteFeedLoader.Result]()
+        sut.load { capturedResults.append($0) }
         action()
-        XCTAssertEqual(capturedErrors, [result])
+        XCTAssertEqual(capturedResults, [result])
+    }
+    
+    
+    private func makeItems(_ items: [[String: Any]]) -> Data {
+        let json = ["items": items]
+        return try! JSONSerialization.data(withJSONObject: json)
+    }
+    
+    private func makeItem(
+        id: UUID, description: String? = nil, location: String? = nil, imageURL: URL
+    ) -> (model: FeedItem, json: [String: Any]) {
+        let item = FeedItem(
+            id: id,
+            description: description,
+            location: location,
+            imageURL: imageURL
+        )
+        let json = [
+            "id": id.uuidString,
+            "description": description,
+            "location": location,
+            "image": imageURL.absoluteString,
+        ].reduce(into: [String: Any](), { (acc, e) in
+            if let value = e.value {
+                acc[e.key] = value
+            }
+        })
+        return (item, json)
     }
     
     private func makeSUT(url: URL = URL(string: "https://google.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
