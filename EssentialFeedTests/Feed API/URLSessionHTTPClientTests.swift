@@ -15,10 +15,13 @@ class URLSessionHTTPClient {
         self.session = session
     }
     
+    struct InvalidDataError: Error { }
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
         session.dataTask(with: url) { _, _, error in
             if let error = error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(InvalidDataError()))
             }
         }.resume()
     }
@@ -55,7 +58,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     
     func test_getFromUrl_failsOnRequestError() {
         let url = anyURL()
-        let expectedError = NSError(domain: "any error", code: 1)
+        let expectedError = anyNSError()
         
         URLProtocolStub.stub(url: url, error: expectedError, data: nil, response: nil)
         
@@ -77,6 +80,41 @@ class URLSessionHTTPClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
+    func test_getFromUrl_failsOnAllInvalidCases() {
+        XCTAssertNotNil(resultError(error: nil, response: nil, data: nil))
+        XCTAssertNotNil(resultError(error: nil, response: nonHTTPURLResponse(), data: nil))
+        XCTAssertNotNil(resultError(error: nil, response: anyHTTPURLResponse(), data: nil))
+        XCTAssertNotNil(resultError(error: anyNSError(), response: nil, data: nil))
+        XCTAssertNotNil(resultError(error: anyNSError(), response: nil, data: anyData()))
+        XCTAssertNotNil(resultError(error: nil, response: nonHTTPURLResponse(), data: anyData()))
+        XCTAssertNotNil(resultError(error: nil, response: anyHTTPURLResponse(), data: anyData()))
+        XCTAssertNotNil(resultError(error: anyNSError(), response: nonHTTPURLResponse(), data: anyData()))
+        XCTAssertNotNil(resultError(error: anyNSError(), response: anyHTTPURLResponse(), data: anyData()))
+        XCTAssertNotNil(resultError(error: anyNSError(), response: anyHTTPURLResponse(), data: nil))
+    }
+    
+    private func resultError(error: Error?, response: URLResponse?, data: Data?) -> Error? {
+        let url = anyURL()
+        let sut = makeSUT()
+        let exp = expectation(description: "Block excuted")
+
+        URLProtocolStub.stub(url: url, error: error, data: data, response: response)
+        
+        var returnedError: Error?
+        sut.get(from: url) { result in
+            switch result {
+            case .success(_, _):
+                XCTFail("expected error \(String(describing: error)), found \(result) instead")
+            case .failure(let err):
+                returnedError = err
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1)
+        return returnedError
+    }
+    
     private func makeSUT() -> URLSessionHTTPClient {
         let sut = URLSessionHTTPClient(session: .shared)
         trackForMemoryLeak(instance: sut, file: #filePath, line: #line)
@@ -87,12 +125,28 @@ class URLSessionHTTPClientTests: XCTestCase {
         return URL(string: "http://any-url.com")!
     }
     
+    private func nonHTTPURLResponse() -> URLResponse {
+        return URLResponse()
+    }
+    
+    private func anyHTTPURLResponse() -> HTTPURLResponse {
+        return HTTPURLResponse()
+    }
+    
+    private func anyNSError() -> NSError {
+        return NSError(domain: "any error", code: 1)
+    }
+    
+    private func anyData() -> Data {
+        return Data("any data".utf8)
+    }
+    
     class URLProtocolStub: URLProtocol {
         
         struct Stub {
             let error: Error?
             let data: Data?
-            let response: HTTPURLResponse?
+            let response: URLResponse?
         }
         
         static var stub: Stub?
@@ -120,7 +174,7 @@ class URLSessionHTTPClientTests: XCTestCase {
             return request
         }
         
-        static func stub(url: URL, error: Error?, data: Data?, response: HTTPURLResponse?) {
+        static func stub(url: URL, error: Error?, data: Data?, response: URLResponse?) {
             stub = Stub(error: error, data: data, response: response)
         }
         
