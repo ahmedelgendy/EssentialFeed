@@ -38,7 +38,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getFromURL_failsOnWrongURL() {
-        let client = URLSessionHTTPClient(session: .shared)
+        let sut = makeSUT()
         let url = URL(string: "http://any-url.com")!
         let expectation = expectation(description: "block finished")
 
@@ -48,7 +48,7 @@ class URLSessionHTTPClientTests: XCTestCase {
             expectation.fulfill()
         }
         
-        client.get(from: url) { _ in }
+        sut.get(from: url) { _ in }
         
         wait(for: [expectation], timeout: 1)
     }
@@ -59,11 +59,11 @@ class URLSessionHTTPClientTests: XCTestCase {
         
         URLProtocolStub.stub(url: url, error: expectedError, data: nil, response: nil)
         
-        let client = URLSessionHTTPClient(session: .shared)
+        let sut = makeSUT()
 
         let expectation = expectation(description: "data task finished loading")
 
-        client.get(from: url) { result in
+        sut.get(from: url) { result in
             switch result {
             case .success(_, _):
                 XCTFail("expected error \(expectedError), found success instead")
@@ -77,6 +77,9 @@ class URLSessionHTTPClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
+    private func makeSUT() -> URLSessionHTTPClient {
+        return URLSessionHTTPClient(session: .shared)
+    }
     
     class URLProtocolStub: URLProtocol {
         
