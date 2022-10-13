@@ -39,7 +39,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     
     func test_getFromURL_failsOnWrongURL() {
         let sut = makeSUT()
-        let url = URL(string: "http://any-url.com")!
+        let url = anyURL()
         let expectation = expectation(description: "block finished")
 
         URLProtocolStub.observeRequests { request in
@@ -54,7 +54,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getFromUrl_failsOnRequestError() {
-        let url = URL(string: "http://any-url.com")!
+        let url = anyURL()
         let expectedError = NSError(domain: "any error", code: 1)
         
         URLProtocolStub.stub(url: url, error: expectedError, data: nil, response: nil)
@@ -79,6 +79,10 @@ class URLSessionHTTPClientTests: XCTestCase {
     
     private func makeSUT() -> URLSessionHTTPClient {
         return URLSessionHTTPClient(session: .shared)
+    }
+    
+    private func anyURL() -> URL {
+        return URL(string: "http://any-url.com")!
     }
     
     class URLProtocolStub: URLProtocol {
