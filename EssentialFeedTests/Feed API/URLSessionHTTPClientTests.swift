@@ -16,6 +16,7 @@ class URLSessionHTTPClient {
     }
     
     struct InvalidDataError: Error { }
+    
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
         session.dataTask(with: url) { data, response, error in
             if let error = error {
@@ -37,7 +38,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         URLProtocolStub.startIntercepting()
     }
     
-    override class func tearDown() {
+    override func tearDown() {
         super.tearDown()
         URLProtocolStub.stopIntercepting()
     }
@@ -45,17 +46,17 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromURL_failsOnWrongURL() {
         let sut = makeSUT()
         let url = anyURL()
-        let expectation = expectation(description: "block finished")
+        let exp = expectation(description: "Wait for request")
 
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, url)
             XCTAssertEqual(request.httpMethod, "GET")
-            expectation.fulfill()
+            exp.fulfill()
         }
         
         sut.get(from: url) { _ in }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [exp], timeout: 1)
     }
     
     func test_getFromUrl_failsOnRequestError() {
@@ -66,7 +67,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         
         let sut = makeSUT()
 
-        let expectation = expectation(description: "data task finished loading")
+        let exp = expectation(description: "data task finished loading")
 
         sut.get(from: url) { result in
             switch result {
@@ -76,10 +77,10 @@ class URLSessionHTTPClientTests: XCTestCase {
                 XCTAssertEqual(error.domain, expectedError.domain)
                 XCTAssertEqual(error.code, expectedError.code)
             }
-            expectation.fulfill()
+            exp.fulfill()
         }
         
-        wait(for: [expectation], timeout: 1)
+        wait(for: [exp], timeout: 1)
     }
     
     func test_getFromUrl_failsOnAllInvalidCases() {
@@ -94,49 +95,39 @@ class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertNotNil(resultError(data: anyData(), response: nonHTTPURLResponse(), error: nil))
     }
     
-    func test_getFromUrl_deliversResultIoSuccess() {
-        let url = anyURL()
+    func test_getFromUrl_succeedOnHTTPResponseWithData() {
         let data = anyData()
         let response = anyHTTPURLResponse()
-        URLProtocolStub.stub(url: url, error: nil, data: data, response: response)
-        
-        let sut = makeSUT()
-
-        let expectation = expectation(description: "data task finished loading")
-
-        sut.get(from: url) { result in
-            switch result {
-            case let .success(recievedData, recievedResponse):
-                XCTAssertEqual(recievedData, data)
-                XCTAssertEqual(recievedResponse.url, response.url)
-                XCTAssertEqual(recievedResponse.statusCode, response.statusCode)
-            case .failure:
-                XCTFail("expected success, found \(result) instead")
-            }
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 1)
+        let result = resultValuesFor(data: data, response: response , error: nil)
+        XCTAssertEqual(result?.data, data)
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
     }
     
     func test_getFromUrl_deliversEmptyDataOnHTTPURLResponseWithNilData() {
-        let url = anyURL()
         let response = anyHTTPURLResponse()
-        URLProtocolStub.stub(url: url, error: nil, data: nil, response: response)
-        let expectation = expectation(description: "data task finished loading")
-
+        let result = resultValuesFor(data: nil, response: response , error: nil)
+        XCTAssertEqual(result?.data, Data())
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
+    }
+    
+    private func resultValuesFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> (data: Data, response: HTTPURLResponse)? {
+        let url = anyURL()
+        URLProtocolStub.stub(url: url, error: error, data: data, response: response)
+        let exp = expectation(description: "data task finished loading")
+        var recievedValues: (data: Data, response: HTTPURLResponse)?
         makeSUT().get(from: url) { result in
             switch result {
             case let .success(recievedData, recievedResponse):
-                XCTAssertEqual(recievedData, Data())
-                XCTAssertEqual(recievedResponse.url, response.url)
-                XCTAssertEqual(recievedResponse.statusCode, response.statusCode)
+                recievedValues = (data: recievedData, response: recievedResponse)
             case .failure:
                 XCTFail("expected success, found \(result) instead")
             }
-            expectation.fulfill()
+            exp.fulfill()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [exp], timeout: 1)
+        return recievedValues
     }
     
     private func resultError(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> Error? {
@@ -205,6 +196,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         static func stopIntercepting() {
             URLProtocol.unregisterClass(URLProtocolStub.self)
             stub = nil
+            observer = nil
         }
         
         static func observeRequests(_ observer: @escaping (URLRequest) -> Void) {
@@ -212,11 +204,11 @@ class URLSessionHTTPClientTests: XCTestCase {
         }
         
         override class func canInit(with request: URLRequest) -> Bool {
+            observer?(request)
             return true
         }
         
         override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-            observer?(request)
             return request
         }
         
