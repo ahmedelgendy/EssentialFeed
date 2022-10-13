@@ -8,7 +8,7 @@
 import XCTest
 import EssentialFeed
 
-class URLSessionHTTPClient {
+class URLSessionHTTPClient: HTTPClient {
     let session: URLSession
     
     init(session: URLSession) {
@@ -44,7 +44,6 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
     
     func test_getFromURL_failsOnWrongURL() {
-        let sut = makeSUT()
         let url = anyURL()
         let exp = expectation(description: "Wait for request")
 
@@ -54,7 +53,7 @@ class URLSessionHTTPClientTests: XCTestCase {
             exp.fulfill()
         }
         
-        sut.get(from: url) { _ in }
+        makeSUT().get(from: url) { _ in }
         
         wait(for: [exp], timeout: 1)
     }
@@ -62,14 +61,10 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromUrl_failsOnRequestError() {
         let url = anyURL()
         let expectedError = anyNSError()
-        
         URLProtocolStub.stub(url: url, error: expectedError, data: nil, response: nil)
-        
-        let sut = makeSUT()
-
         let exp = expectation(description: "data task finished loading")
 
-        sut.get(from: url) { result in
+        makeSUT().get(from: url) { result in
             switch result {
             case .success(_, _):
                 XCTFail("expected error \(expectedError), found success instead")
@@ -136,13 +131,11 @@ class URLSessionHTTPClientTests: XCTestCase {
     
     private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HTTPClientResult {
         let url = anyURL()
-        let sut = makeSUT()
         let exp = expectation(description: "Wait response")
-
         URLProtocolStub.stub(url: url, error: error, data: data, response: response)
         
         var returnedResult: HTTPClientResult!
-        sut.get(from: url) { result in
+        makeSUT().get(from: url) { result in
             returnedResult = result
             exp.fulfill()
         }
@@ -151,7 +144,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         return returnedResult
     }
     
-    private func makeSUT() -> URLSessionHTTPClient {
+    private func makeSUT() -> HTTPClient {
         let sut = URLSessionHTTPClient(session: .shared)
         trackForMemoryLeak(instance: sut, file: #filePath, line: #line)
         return sut
