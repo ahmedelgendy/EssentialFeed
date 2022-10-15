@@ -97,5 +97,4 @@ class EssentialFeedEndToEndTests: XCTestCase {
         return URL(string: "https://url-\(index+1).com")!
     }
 
-    
 }
