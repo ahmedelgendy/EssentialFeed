@@ -11,9 +11,17 @@ import EssentialFeed
 
 class FeedStore {
     var deletionCount = 0
+    var insertionCount = 0
     
-    func deleteCachedFeed() {
+    var completions: [(Error?) -> Void] = []
+    
+    func deleteCachedFeed(completion: @escaping (Error?) -> Void) {
+        completions.append(completion)
         deletionCount += 1
+    }
+    
+    func complete(withError error: Error?, index: Int = 0) {
+        completions[index](error)
     }
 }
 
@@ -24,8 +32,12 @@ class LocalFeedLoader {
         self.feedStore = feedStore
     }
     
-    func save(_ items: [FeedItem]) {
-        feedStore.deleteCachedFeed()
+    func save(_ items: [FeedItem], completion: @escaping (Error?) -> Void) {
+        feedStore.deleteCachedFeed { error in
+            if let error = error {
+                completion(error)
+            }
+        }
     }
     
 }
@@ -40,10 +52,17 @@ class FeedStoreTests: XCTestCase {
     func test_save_requestsCacheDeletion() {
         let (sut, store) = makeSUT()
         let items = [uniqueItem(), uniqueItem()]
-        sut.save(items)
+        sut.save(items) { _ in }
         XCTAssertEqual(store.deletionCount, 1)
     }
     
+    func test_save_doesnotRequestInsertionOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let items = [uniqueItem()]
+        sut.save(items) { _ in }
+        store.complete(withError: anyNSError())
+        XCTAssertEqual(store.insertionCount, 0)
+    }
     
     // MARK: - HELPERS
     
@@ -61,4 +80,9 @@ class FeedStoreTests: XCTestCase {
     private func anyURL() -> URL {
         return URL(string: "http://any-url.com")!
     }
+    
+    private func anyNSError() -> NSError {
+        return NSError(domain: "any error", code: 1)
+    }
+    
 }
