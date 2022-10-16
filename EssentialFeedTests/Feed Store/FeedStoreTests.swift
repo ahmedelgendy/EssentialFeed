@@ -34,11 +34,11 @@ class FeedStoreTests: XCTestCase {
     func test_save_requestsInsertionWithTimestampOnDeletionSuccess() {
         let timestamp = Date()
         let (sut, store) = makeSUT(timestamp: { timestamp })
-        let items = [uniqueItem(), uniqueItem(), uniqueItem()]
-        sut.save(items) { _ in }
+        let items = uniqueItems()
+        sut.save(items.models) { _ in }
         store.completeDeletionSuccessfully()
         
-        XCTAssertEqual(store.recievedMessages, [.deletion, .insertion(items, timestamp)])
+        XCTAssertEqual(store.recievedMessages, [.deletion, .insertion(items.localItems, timestamp)])
     }
     
     func test_save_deliversErrorOnDeletionError() {
@@ -71,7 +71,7 @@ class FeedStoreTests: XCTestCase {
         var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
         var recievedErrors = [LocalFeedLoader.SaveResult?]()
-        sut?.save([uniqueItem()]) { recievedErrors.append($0)}
+        sut?.save(uniqueItems().models) { recievedErrors.append($0)}
         sut = nil
         store.completeDeletion(withError: anyNSError())
 
@@ -83,7 +83,7 @@ class FeedStoreTests: XCTestCase {
         var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
         var recievedErrors = [LocalFeedLoader.SaveResult?]()
-        sut?.save([uniqueItem()]) { recievedErrors.append($0)}
+        sut?.save(uniqueItems().models) { recievedErrors.append($0)}
         store.completeDeletionSuccessfully()
         sut = nil
         store.completeInsertion(withError: anyNSError())
@@ -93,10 +93,9 @@ class FeedStoreTests: XCTestCase {
     // MARK: - HELPERS
     
     private func expect(sut: LocalFeedLoader, completeWithError expectedError: NSError?, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
-        let items = [uniqueItem()]
         let exp = expectation(description: "Wait saving items")
         var recievedError: NSError?
-        sut.save(items) { error in
+        sut.save(uniqueItems().models) { error in
             recievedError = error as? NSError
             exp.fulfill()
         }
@@ -111,6 +110,12 @@ class FeedStoreTests: XCTestCase {
         trackForMemoryLeak(instance: store, file: file, line: line)
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return (sut: sut, store: store)
+    }
+    
+    private func uniqueItems() -> (models: [FeedItem], localItems: [LocalFeedImage]) {
+        let items = [uniqueItem(), uniqueItem()]
+        let localItems = items.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+        return (models: items, localItems: localItems)
     }
     
     private func uniqueItem() -> FeedItem {
@@ -132,7 +137,7 @@ class FeedStoreTests: XCTestCase {
 
         enum RecievedMessage: Equatable {
             case deletion
-            case insertion([FeedItem], Date)
+            case insertion([LocalFeedImage], Date)
         }
         
         var recievedMessages: [RecievedMessage] = []
@@ -142,7 +147,7 @@ class FeedStoreTests: XCTestCase {
             recievedMessages.append(.deletion)
         }
         
-        func insert(_ items: [FeedItem], timestamp: Date, completion: @escaping DeletionCompletion) {
+        func insert(_ items: [LocalFeedImage], timestamp: Date, completion: @escaping DeletionCompletion) {
             insertionCompletions.append(completion)
             recievedMessages.append(.insertion(items, timestamp))
         }
@@ -165,3 +170,5 @@ class FeedStoreTests: XCTestCase {
     }
     
 }
+
+//private extension  Array where Element ==
