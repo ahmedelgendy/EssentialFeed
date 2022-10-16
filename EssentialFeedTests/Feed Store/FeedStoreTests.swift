@@ -93,6 +93,23 @@ class FeedStoreTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.deletion, .insertion(items, timestamp)])
     }
     
+    func test_save_deliversErrorOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let items = [uniqueItem()]
+        let exp = expectation(description: "Wait saving items")
+        var recievedError: NSError?
+        sut.save(items) { error in
+            recievedError = error as? NSError
+            exp.fulfill()
+        }
+        let expectedError = anyNSError()
+        store.complete(withError: expectedError)
+        
+        wait(for: [exp], timeout: 1)
+        XCTAssertEqual(recievedError, expectedError)
+    }
+
+    
     // MARK: - HELPERS
     
     private func makeSUT(timestamp: @escaping () -> Date = { Date() }, file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStore) {
