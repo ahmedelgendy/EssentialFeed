@@ -41,7 +41,7 @@ class LocalFeedLoader {
     private var currentDate: () -> Date
     
     init(feedStore: FeedStore, currentDate: @escaping () -> Date) {
-        self.currentDate = timestamp
+        self.currentDate = currentDate
         self.feedStore = feedStore
     }
     
