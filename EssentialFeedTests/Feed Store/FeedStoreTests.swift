@@ -12,9 +12,11 @@ import EssentialFeed
 class FeedStore {
     
     typealias DeletionCompletion = (Error?) -> Void
-    
+    typealias InsertionCompletion = (Error?) -> Void
+
     var deletionCompletions: [DeletionCompletion] = []
-        
+    var insertionCompletions: [InsertionCompletion] = []
+
     enum RecievedMessage: Equatable {
         case deletion
         case insertion([FeedItem], Date)
@@ -27,7 +29,8 @@ class FeedStore {
         recievedMessages.append(.deletion)
     }
     
-    func insert(_ items: [FeedItem], timestamp: Date) {
+    func insert(_ items: [FeedItem], timestamp: Date, completion: @escaping DeletionCompletion) {
+        insertionCompletions.append(completion)
         recievedMessages.append(.insertion(items, timestamp))
     }
     
@@ -37,6 +40,10 @@ class FeedStore {
     
     func completeDeletionSuccessfully(index: Int = 0) {
         deletionCompletions[index](nil)
+    }
+    
+    func completeInsertion(withError error: Error?, index: Int = 0) {
+        insertionCompletions[index](error)
     }
 }
 
@@ -54,7 +61,7 @@ class LocalFeedLoader {
             if let error = error {
                 completion(error)
             } else {
-                feedStore.insert(items, timestamp: currentDate())
+                feedStore.insert(items, timestamp: currentDate(), completion: completion)
             }
         }
     }
@@ -109,6 +116,22 @@ class FeedStoreTests: XCTestCase {
         XCTAssertEqual(recievedError, expectedError)
     }
 
+    func test_save_deliversErrorOnInsertionError() {
+        let (sut, store) = makeSUT()
+        let items = [uniqueItem()]
+        let exp = expectation(description: "Wait saving items")
+        var recievedError: NSError?
+        sut.save(items) { error in
+            recievedError = error as? NSError
+            exp.fulfill()
+        }
+        let expectedError = anyNSError()
+        store.completeDeletionSuccessfully()
+        store.completeInsertion(withError: expectedError)
+
+        wait(for: [exp], timeout: 1)
+        XCTAssertEqual(recievedError, expectedError)
+    }
     
     // MARK: - HELPERS
     
