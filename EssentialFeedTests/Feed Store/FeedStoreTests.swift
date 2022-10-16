@@ -170,5 +170,3 @@ class FeedStoreTests: XCTestCase {
     }
     
 }
-
-//private extension  Array where Element ==
