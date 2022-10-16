@@ -26,11 +26,12 @@ class LocalFeedLoader {
     }
     
     func save(_ items: [FeedItem], completion: @escaping (Error?) -> Void) {
-        feedStore.deleteCachedFeed { [unowned self] error in
+        feedStore.deleteCachedFeed { [weak self] error in
+            guard let self = self else { return }
             if let error = error {
                 completion(error)
             } else {
-                feedStore.insert(items, timestamp: currentDate(), completion: completion)
+                self.feedStore.insert(items, timestamp: self.currentDate(), completion: completion)
             }
         }
     }
@@ -92,6 +93,16 @@ class FeedStoreTests: XCTestCase {
             store.completeDeletionSuccessfully()
             store.completeInsertionSuccessfully()
         }
+    }
+    
+    func test_save_doesnotDeliverResultAfterSUTInstanceDeallocation() {
+        var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: FeedStoreSpy(), currentDate: Date.init)
+        
+        var recievedErrors = [Error?]()
+        sut?.save([uniqueItem()]) { recievedErrors.append($0)}
+        sut = nil
+        
+        XCTAssertTrue(recievedErrors.isEmpty)
     }
     
     // MARK: - HELPERS
