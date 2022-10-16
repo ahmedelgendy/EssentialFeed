@@ -31,7 +31,10 @@ class LocalFeedLoader {
             if let error = error {
                 completion(error)
             } else {
-                self.feedStore.insert(items, timestamp: self.currentDate(), completion: completion)
+                self.feedStore.insert(items, timestamp: self.currentDate()) { [weak self] error in
+                    guard self != nil else { return }
+                    completion(error)
+                }
             }
         }
     }
@@ -56,7 +59,7 @@ class FeedStoreTests: XCTestCase {
         let (sut, store) = makeSUT()
         let items = [uniqueItem()]
         sut.save(items) { _ in }
-        store.complete(withError: anyNSError())
+        store.completeDeletion(withError: anyNSError())
         XCTAssertEqual(store.recievedMessages, [.deletion])
     }
     
@@ -74,7 +77,7 @@ class FeedStoreTests: XCTestCase {
         let (sut, store) = makeSUT()
         let expectedError = anyNSError()
         expect(sut: sut, completeWithError: expectedError) {
-            store.complete(withError: expectedError)
+            store.completeDeletion(withError: expectedError)
         }
     }
 
@@ -95,13 +98,27 @@ class FeedStoreTests: XCTestCase {
         }
     }
     
-    func test_save_doesnotDeliverResultAfterSUTInstanceDeallocation() {
-        var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: FeedStoreSpy(), currentDate: Date.init)
+    func test_save_doesnotDeliverDeletionErrorAfterSUTInstanceDeallocation() {
+        let store = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
         var recievedErrors = [Error?]()
         sut?.save([uniqueItem()]) { recievedErrors.append($0)}
         sut = nil
+        store.completeDeletion(withError: anyNSError())
+
+        XCTAssertTrue(recievedErrors.isEmpty)
+    }
+    
+    func test_save_doesnotDeliverInsertionErrorAfterSUTInstanceDeallocation() {
+        let store = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
+        var recievedErrors = [Error?]()
+        sut?.save([uniqueItem()]) { recievedErrors.append($0)}
+        store.completeDeletionSuccessfully()
+        sut = nil
+        store.completeInsertion(withError: anyNSError())
         XCTAssertTrue(recievedErrors.isEmpty)
     }
     
@@ -162,7 +179,7 @@ class FeedStoreTests: XCTestCase {
             recievedMessages.append(.insertion(items, timestamp))
         }
         
-        func complete(withError error: Error?, index: Int = 0) {
+        func completeDeletion(withError error: Error?, index: Int = 0) {
             deletionCompletions[index](error)
         }
         
