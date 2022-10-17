@@ -9,7 +9,7 @@ import Foundation
 
 public enum LocalFeedResult {
     case empty
-    case success([LocalFeedImage])
+    case success([LocalFeedImage], Date)
     case failure(Error)
 }
 
@@ -41,8 +41,8 @@ final public class LocalFeedLoader {
             switch result {
             case .empty:
                 completion(.success([]))
-            case .success(_):
-                break
+            case .success(let cachedItems, _):
+                completion(.success(cachedItems.toModels()))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -61,5 +61,12 @@ final public class LocalFeedLoader {
 private extension Array where Element == FeedItem {
     func toLocal() -> [LocalFeedImage] {
         map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+    }
+}
+
+
+private extension Array where Element == LocalFeedImage {
+    func toModels() -> [FeedItem] {
+        map { FeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
     }
 }

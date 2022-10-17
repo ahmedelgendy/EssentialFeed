@@ -37,6 +37,16 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
             store.completeRetrievalSuccessfully()
         }
     }
+    
+    func test_load_deliverCachedImagesOnCacheLessThanSevenDaysOldCache() {
+        let currentDate = Date()
+        let (sut, store) = makeSUT(currentDate: { currentDate })
+        let items = uniqueItems()
+        let lessThanSevenDaysTimestamp = currentDate.adding(days: -7).adding(seconds: 1)
+        expect(sut, completeWith: .success(items.models)) {
+            store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
+        }
+    }
 
     // MARK: - HELPERS
 
@@ -57,9 +67,9 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    private func makeSUT(timestamp: @escaping () -> Date = { Date() }, file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStoreSpy) {
+    private func makeSUT(currentDate: @escaping () -> Date = { Date() }, file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStoreSpy) {
         let store = FeedStoreSpy()
-        let sut = LocalFeedLoader(feedStore: store, currentDate: timestamp)
+        let sut = LocalFeedLoader(feedStore: store, currentDate: currentDate)
         trackForMemoryLeak(instance: store, file: file, line: line)
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return (sut: sut, store: store)
@@ -67,5 +77,29 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     
     private func anyNSError() -> NSError {
         return NSError(domain: "any error", code: 1)
+    }
+    
+    private func uniqueItems() -> (models: [FeedItem], localItems: [LocalFeedImage]) {
+        let items = [uniqueItem(), uniqueItem()]
+        let localItems = items.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+        return (models: items, localItems: localItems)
+    }
+    
+    private func uniqueItem() -> FeedItem {
+        FeedItem(id: UUID(), description: "any", location: "any", imageURL: anyURL())
+    }
+    
+    private func anyURL() -> URL {
+        return URL(string: "http://any-url.com")!
+    }
+}
+
+private extension Date {
+    func adding(days: Int) -> Date {
+        return Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
+    }
+        
+    func adding(seconds: Int) -> Date {
+        return Calendar(identifier: .gregorian).date(byAdding: .second, value: seconds, to: self)!
     }
 }
