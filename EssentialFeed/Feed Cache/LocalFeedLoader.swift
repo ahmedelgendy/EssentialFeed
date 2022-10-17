@@ -7,9 +7,16 @@
 
 import Foundation
 
+public enum LocalFeedResult {
+    case empty
+    case success([LocalFeedImage])
+    case failure(Error)
+}
+
 final public class LocalFeedLoader {
     
     public typealias SaveResult = Error?
+    public typealias LoadResult = LoadFeedResult
     private let feedStore: FeedStore
     private var currentDate: () -> Date
     
@@ -29,8 +36,17 @@ final public class LocalFeedLoader {
         }
     }
     
-    public func load(completion: @escaping (Error?) -> Void) {
-        feedStore.retrieve(completion: completion)
+    public func load(completion: @escaping (LoadResult) -> Void) {
+        feedStore.retrieve { result in
+            switch result {
+            case .empty:
+                completion(.success([]))
+            case .success(_):
+                break
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
