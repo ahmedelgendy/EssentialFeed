@@ -37,14 +37,14 @@ final public class LocalFeedLoader {
     }
     
     public func load(completion: @escaping (LoadResult) -> Void) {
-        feedStore.retrieve { result in
+        feedStore.retrieve { [unowned self] result in
             switch result {
-            case .empty:
-                completion(.success([]))
-            case .success(let cachedItems, _):
-                completion(.success(cachedItems.toModels()))
             case .failure(let error):
                 completion(.failure(error))
+            case .success(let cachedItems, let timestamp) where self.validate(timestamp):
+                completion(.success(cachedItems.toModels()))
+            case .empty, .success:
+                completion(.success([]))
             }
         }
     }
@@ -54,6 +54,12 @@ final public class LocalFeedLoader {
             guard self != nil else { return }
             completion(error)
         }
+    }
+    
+    private func validate(_ timestamp: Date) -> Bool {
+        let calender = Calendar(identifier: .gregorian)
+        guard let maxDate = calender.date(byAdding: .day, value: 7, to: timestamp) else { return false }
+        return currentDate() < maxDate
     }
     
 }
