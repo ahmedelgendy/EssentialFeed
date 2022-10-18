@@ -92,7 +92,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         sut.load() { _ in }
         store.completeRetrieval(with: items.localItems, timestamp: sevenDaysTimestamp)
         
-        XCTAssertEqual(store.recievedMessages, [.retrieve])
+        XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
     }
 
     // MARK: - HELPERS
