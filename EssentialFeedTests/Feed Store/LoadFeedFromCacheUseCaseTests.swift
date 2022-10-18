@@ -106,6 +106,20 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         
         XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
     }
+    
+    func test_load_doesnotDeliverResultAfterSUTDeinitalization() {
+        let currentDate = Date()
+        let feedStore = FeedStoreSpy()
+        var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: feedStore, currentDate: { currentDate })
+        
+        var recievedResults = [LocalFeedLoader.LoadResult]()
+        sut?.load { recievedResults.append($0) }
+        
+        sut = nil
+        feedStore.completeRetrievalSuccessfully()
+        
+        XCTAssertTrue(recievedResults.isEmpty)
+    }
 
     // MARK: - HELPERS
 
