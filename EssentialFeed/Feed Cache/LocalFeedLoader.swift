@@ -34,8 +34,8 @@ extension LocalFeedLoader: FeedLoader {
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let cachedItems, let timestamp) where FeedCachPolicy.validate(timestamp, against: self.currentDate()):
-                completion(.success(cachedItems.toModels()))
+            case .success(let cachedFeed, let timestamp) where FeedCachPolicy.validate(timestamp, against: self.currentDate()):
+                completion(.success(cachedFeed.toModels()))
             case .empty, .success:
                 completion(.success([]))
             }
@@ -46,19 +46,19 @@ extension LocalFeedLoader: FeedLoader {
 extension LocalFeedLoader {
     public typealias SaveResult = Error?
 
-    public func save(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
+    public func save(_ feed: [FeedImage], completion: @escaping (SaveResult?) -> Void) {
         feedStore.deleteCachedFeed { [weak self] error in
             guard let self = self else { return }
             if let cacheDeletionError = error {
                 completion(cacheDeletionError)
             } else {
-                self.cache(items, completion: completion)
+                self.cache(feed, completion: completion)
             }
         }
     }
     
-    private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
-        feedStore.insert(items.toLocal(), timestamp: self.currentDate()) { [weak self] error in
+    private func cache(_ feed: [FeedImage], completion: @escaping (SaveResult?) -> Void) {
+        feedStore.insert(feed.toLocal(), timestamp: self.currentDate()) { [weak self] error in
             guard self != nil else { return }
             completion(error)
         }
@@ -82,7 +82,7 @@ extension LocalFeedLoader {
     }
 }
 
-private extension Array where Element == FeedItem {
+private extension Array where Element == FeedImage {
     func toLocal() -> [LocalFeedImage] {
         map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
     }
@@ -90,7 +90,7 @@ private extension Array where Element == FeedItem {
 
 
 private extension Array where Element == LocalFeedImage {
-    func toModels() -> [FeedItem] {
-        map { FeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+    func toModels() -> [FeedImage] {
+        map { FeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
     }
 }

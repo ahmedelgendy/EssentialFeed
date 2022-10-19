@@ -1,5 +1,5 @@
 //
-//  FeedItem.swift
+//  FeedImage.swift
 //  EssentialFeed
 //
 //  Created by Ahmed Elgendy on 2.10.2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct FeedItem: Equatable {
+public struct FeedImage: Equatable {
     public let id: UUID
     public let description: String?
     public let location: String?

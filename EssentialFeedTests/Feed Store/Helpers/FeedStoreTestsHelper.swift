@@ -9,14 +9,14 @@ import Foundation
 import EssentialFeed
 
 
-func uniqueItems() -> (models: [FeedItem], localItems: [LocalFeedImage]) {
-    let items = [uniqueItem(), uniqueItem()]
-    let localItems = items.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
-    return (models: items, localItems: localItems)
+func uniqueImageFeed() -> (models: [FeedImage], local: [LocalFeedImage]) {
+    let feed = [uniqueItem(), uniqueItem()]
+    let local = feed.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+    return (models: feed, local: local)
 }
 
-func uniqueItem() -> FeedItem {
-    FeedItem(id: UUID(), description: "any", location: "any", imageURL: anyURL())
+func uniqueItem() -> FeedImage {
+    FeedImage(id: UUID(), description: "any", location: "any", imageURL: anyURL())
 }
 
 extension Date {

@@ -33,10 +33,10 @@ class InvalidateCacheUseCaseTests: XCTestCase {
     func test_validateCache_doesnotDeleteValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         sut.validateCache()
-        store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: validTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
@@ -44,11 +44,11 @@ class InvalidateCacheUseCaseTests: XCTestCase {
     func test_validateCache_deletesInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         
         sut.validateCache()
-        store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: invalidTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
     }

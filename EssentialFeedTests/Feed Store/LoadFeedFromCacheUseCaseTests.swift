@@ -41,30 +41,30 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     func test_load_deliverCachedImagesOnValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
-        expect(sut, completeWith: .success(items.models)) {
-            store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
+        expect(sut, completeWith: .success(feed.models)) {
+            store.completeRetrieval(with: feed.local, timestamp: validTimestamp)
         }
     }
     
     func test_load_deliverNoImagesOnInvalidCacheMaxDays() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         expect(sut, completeWith: .success([])) {
-            store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
+            store.completeRetrieval(with: feed.local, timestamp: invalidTimestamp)
         }
     }
     
     func test_load_deliverNoImagesOnInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: -1)
         expect(sut, completeWith: .success([])) {
-            store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
+            store.completeRetrieval(with: feed.local, timestamp: validTimestamp)
         }
     }
     
@@ -86,11 +86,11 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     func test_load_hasNoSideEffectOnValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         
         sut.load() { _ in }
-        store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: validTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
@@ -98,11 +98,11 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
     func test_load_hasNoSideEffectOnInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
-        let items = uniqueItems()
+        let feed = uniqueImageFeed()
         let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         
         sut.load() { _ in }
-        store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
+        store.completeRetrieval(with: feed.local, timestamp: invalidTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }

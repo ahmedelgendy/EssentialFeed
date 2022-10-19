@@ -34,11 +34,11 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_requestsInsertionWithTimestampOnDeletionSuccess() {
         let timestamp = Date()
         let (sut, store) = makeSUT(timestamp: { timestamp })
-        let items = uniqueItems()
-        sut.save(items.models) { _ in }
+        let feed = uniqueImageFeed()
+        sut.save(feed.models) { _ in }
         store.completeDeletionSuccessfully()
         
-        XCTAssertEqual(store.recievedMessages, [.deletion, .insertion(items.localItems, timestamp)])
+        XCTAssertEqual(store.recievedMessages, [.deletion, .insertion(feed.local, timestamp)])
     }
     
     func test_save_deliversErrorOnDeletionError() {
@@ -71,7 +71,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
         var recievedErrors = [LocalFeedLoader.SaveResult?]()
-        sut?.save(uniqueItems().models) { recievedErrors.append($0)}
+        sut?.save(uniqueImageFeed().models) { recievedErrors.append($0)}
         sut = nil
         store.completeDeletion(withError: anyNSError())
 
@@ -83,7 +83,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         var sut: LocalFeedLoader? = LocalFeedLoader(feedStore: store, currentDate: Date.init)
         
         var recievedErrors = [LocalFeedLoader.SaveResult?]()
-        sut?.save(uniqueItems().models) { recievedErrors.append($0)}
+        sut?.save(uniqueImageFeed().models) { recievedErrors.append($0)}
         store.completeDeletionSuccessfully()
         sut = nil
         store.completeInsertion(withError: anyNSError())
@@ -95,7 +95,7 @@ class CacheFeedUseCaseTests: XCTestCase {
     private func expect(sut: LocalFeedLoader, completeWithError expectedError: NSError?, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "Wait saving items")
         var recievedError: NSError?
-        sut.save(uniqueItems().models) { error in
+        sut.save(uniqueImageFeed().models) { error in
             recievedError = error as? NSError
             exp.fulfill()
         }
