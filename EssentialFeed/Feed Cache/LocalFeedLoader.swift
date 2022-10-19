@@ -33,6 +33,24 @@ final public class LocalFeedLoader {
     }
 }
 
+extension LocalFeedLoader: FeedLoader {
+    public typealias LoadResult = LoadFeedResult
+
+    public func load(completion: @escaping (LoadResult) -> Void) {
+        feedStore.retrieve { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let cachedItems, let timestamp) where self.validate(timestamp):
+                completion(.success(cachedItems.toModels()))
+            case .empty, .success:
+                completion(.success([]))
+            }
+        }
+    }
+}
+
 extension LocalFeedLoader {
     public typealias SaveResult = Error?
 
@@ -54,24 +72,6 @@ extension LocalFeedLoader {
         }
     }
 
-}
-
-extension LocalFeedLoader {
-    public typealias LoadResult = LoadFeedResult
-
-    public func load(completion: @escaping (LoadResult) -> Void) {
-        feedStore.retrieve { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let cachedItems, let timestamp) where self.validate(timestamp):
-                completion(.success(cachedItems.toModels()))
-            case .empty, .success:
-                completion(.success([]))
-            }
-        }
-    }
 }
 
 extension LocalFeedLoader {
