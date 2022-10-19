@@ -41,6 +41,18 @@ class InvalidateCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
     
+    func test_validateCache_deletesCacheOnSevenDaysOldCache() {
+        let currentDate = Date()
+        let (sut, store) = makeSUT(currentDate: { currentDate })
+        let items = uniqueItems()
+        let sevenDaysTimestamp = currentDate.adding(days: -7)
+        
+        sut.validateCache()
+        store.completeRetrieval(with: items.localItems, timestamp: sevenDaysTimestamp)
+        
+        XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
+    }
+    
     // MARK: - HELPERS
 
     private func makeSUT(currentDate: @escaping () -> Date = { Date() }, file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStoreSpy) {
