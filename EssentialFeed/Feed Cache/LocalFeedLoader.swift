@@ -7,12 +7,6 @@
 
 import Foundation
 
-public enum LocalFeedResult {
-    case empty
-    case success([LocalFeedImage], Date)
-    case failure(Error)
-}
-
 final public class LocalFeedLoader {
     
     private let feedStore: FeedStore
@@ -34,9 +28,9 @@ extension LocalFeedLoader: FeedLoader {
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let cachedFeed, let timestamp) where FeedCachPolicy.validate(timestamp, against: self.currentDate()):
+            case .found(let cachedFeed, let timestamp) where FeedCachPolicy.validate(timestamp, against: self.currentDate()):
                 completion(.success(cachedFeed.toModels()))
-            case .empty, .success:
+            case .empty, .found:
                 completion(.success([]))
             }
         }
@@ -73,9 +67,9 @@ extension LocalFeedLoader {
             switch result {
             case .failure:
                 self.feedStore.deleteCachedFeed { _ in }
-            case .success(_, let timestamp) where !FeedCachPolicy.validate(timestamp, against: self.currentDate()):
+            case .found(_, let timestamp) where !FeedCachPolicy.validate(timestamp, against: self.currentDate()):
                 self.feedStore.deleteCachedFeed { _ in }
-            case .empty, .success: break
+            case .empty, .found: break
             }
         }
 
