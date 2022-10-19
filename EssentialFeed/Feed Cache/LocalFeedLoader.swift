@@ -15,18 +15,27 @@ public enum LocalFeedResult {
 
 final public class LocalFeedLoader {
     
-    public typealias SaveResult = Error?
-    public typealias LoadResult = LoadFeedResult
-    private var maxCacheAge = 7
     private let calender = Calendar(identifier: .gregorian)
     private let feedStore: FeedStore
     private var currentDate: () -> Date
-    
+    private var maxCacheAge: Int { return 7 }
+
     public init(feedStore: FeedStore, currentDate: @escaping () -> Date) {
         self.currentDate = currentDate
         self.feedStore = feedStore
     }
     
+    private func validate(_ timestamp: Date) -> Bool {
+        guard let maxDate = calender.date(byAdding: .day, value: maxCacheAge, to: timestamp) else {
+            return false
+        }
+        return currentDate() < maxDate
+    }
+}
+
+extension LocalFeedLoader {
+    public typealias SaveResult = Error?
+
     public func save(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
         feedStore.deleteCachedFeed { [weak self] error in
             guard let self = self else { return }
@@ -38,6 +47,18 @@ final public class LocalFeedLoader {
         }
     }
     
+    private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
+        feedStore.insert(items.toLocal(), timestamp: self.currentDate()) { [weak self] error in
+            guard self != nil else { return }
+            completion(error)
+        }
+    }
+
+}
+
+extension LocalFeedLoader {
+    public typealias LoadResult = LoadFeedResult
+
     public func load(completion: @escaping (LoadResult) -> Void) {
         feedStore.retrieve { [weak self] result in
             guard let self = self else { return }
@@ -51,7 +72,9 @@ final public class LocalFeedLoader {
             }
         }
     }
-    
+}
+
+extension LocalFeedLoader {
     public func validateCache() {
         feedStore.retrieve { [weak self] result in
             guard let self = self else { return }
@@ -65,19 +88,6 @@ final public class LocalFeedLoader {
         }
 
     }
-    
-    private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
-        feedStore.insert(items.toLocal(), timestamp: self.currentDate()) { [weak self] error in
-            guard self != nil else { return }
-            completion(error)
-        }
-    }
-
-    private func validate(_ timestamp: Date) -> Bool {
-        guard let maxDate = calender.date(byAdding: .day, value: maxCacheAge, to: timestamp) else { return false }
-        return currentDate() < maxDate
-    }
-    
 }
 
 private extension Array where Element == FeedItem {
