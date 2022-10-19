@@ -53,15 +53,14 @@ final public class LocalFeedLoader {
     }
     
     public func validateCache() {
-        feedStore.retrieve { [unowned self] result in
+        feedStore.retrieve { [weak self] result in
+            guard let self = self else { return }
             switch result {
-            case .empty: break
-            case .success(_, let timestamp) where validate(timestamp):
-                break
-            default:
-                self.feedStore.deleteCachedFeed { _ in
-                    
-                }
+            case .failure:
+                self.feedStore.deleteCachedFeed { _ in }
+            case .success(_, let timestamp) where !self.validate(timestamp):
+                self.feedStore.deleteCachedFeed { _ in }
+            case .empty, .success: break
             }
         }
 
