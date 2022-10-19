@@ -15,22 +15,14 @@ public enum LocalFeedResult {
 
 final public class LocalFeedLoader {
     
-    private let calender = Calendar(identifier: .gregorian)
     private let feedStore: FeedStore
     private var currentDate: () -> Date
-    private var maxCacheAge: Int { return 7 }
 
     public init(feedStore: FeedStore, currentDate: @escaping () -> Date) {
         self.currentDate = currentDate
         self.feedStore = feedStore
     }
     
-    private func validate(_ timestamp: Date) -> Bool {
-        guard let maxDate = calender.date(byAdding: .day, value: maxCacheAge, to: timestamp) else {
-            return false
-        }
-        return currentDate() < maxDate
-    }
 }
 
 extension LocalFeedLoader: FeedLoader {
@@ -42,7 +34,7 @@ extension LocalFeedLoader: FeedLoader {
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let cachedItems, let timestamp) where self.validate(timestamp):
+            case .success(let cachedItems, let timestamp) where FeedCachPolicy.validate(timestamp, against: self.currentDate()):
                 completion(.success(cachedItems.toModels()))
             case .empty, .success:
                 completion(.success([]))
@@ -81,7 +73,7 @@ extension LocalFeedLoader {
             switch result {
             case .failure:
                 self.feedStore.deleteCachedFeed { _ in }
-            case .success(_, let timestamp) where !self.validate(timestamp):
+            case .success(_, let timestamp) where !FeedCachPolicy.validate(timestamp, against: self.currentDate()):
                 self.feedStore.deleteCachedFeed { _ in }
             case .empty, .success: break
             }
