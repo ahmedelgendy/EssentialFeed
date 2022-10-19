@@ -56,12 +56,16 @@ final public class LocalFeedLoader {
     }
     
     public func validateCache() {
-        feedStore.retrieve { _ in
-            
+        feedStore.retrieve { [unowned self] result in
+            switch result {
+            case .empty: break
+            default:
+                self.feedStore.deleteCachedFeed { _ in
+                    
+                }
+            }
         }
-        feedStore.deleteCachedFeed { _ in
-            
-        }
+
     }
     
     private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
