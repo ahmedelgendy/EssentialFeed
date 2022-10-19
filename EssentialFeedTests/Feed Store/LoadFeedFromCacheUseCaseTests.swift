@@ -38,33 +38,33 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         }
     }
     
-    func test_load_deliverCachedImagesOnLessThanSevenDaysOldCache() {
+    func test_load_deliverCachedImagesOnValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let lessThanSevenDaysTimestamp = currentDate.adding(days: -7).adding(seconds: 1)
+        let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         expect(sut, completeWith: .success(items.models)) {
-            store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
+            store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
         }
     }
     
-    func test_load_deliverNoImagesOnSevenDaysOldCache() {
+    func test_load_deliverNoImagesOnInvalidCacheMaxDays() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let sevenDaysTimestamp = currentDate.adding(days: -7)
+        let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         expect(sut, completeWith: .success([])) {
-            store.completeRetrieval(with: items.localItems, timestamp: sevenDaysTimestamp)
+            store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
         }
     }
     
-    func test_load_deliverNoImagesOnMoreThanSevenDaysOldCache() {
+    func test_load_deliverNoImagesOnInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let lessThanSevenDaysTimestamp = currentDate.adding(days: -10)
+        let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: -1)
         expect(sut, completeWith: .success([])) {
-            store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
+            store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
         }
     }
     
@@ -83,26 +83,26 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
     
-    func test_load_hasNoSideEffectOnLessThanSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let lessThanSevenDaysTimestamp = currentDate.adding(days: -7).adding(seconds: 1)
+        let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         
         sut.load() { _ in }
-        store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
+        store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
     
-    func test_load_hasNoSideEffectOnSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let sevenDaysTimestamp = currentDate.adding(days: -7)
+        let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         
         sut.load() { _ in }
-        store.completeRetrieval(with: items.localItems, timestamp: sevenDaysTimestamp)
+        store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }

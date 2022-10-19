@@ -20,10 +20,19 @@ func uniqueItem() -> FeedItem {
 }
 
 extension Date {
+    
+    private var maxAge: Int { return 7 }
+
+    func minusFeedCacheMaxAge() -> Date {
+        self.adding(days: -maxAge)
+    }
+
     func adding(days: Int) -> Date {
         return Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
     }
-        
+}
+  
+extension Date {
     func adding(seconds: Int) -> Date {
         return Calendar(identifier: .gregorian).date(byAdding: .second, value: seconds, to: self)!
     }

@@ -191,7 +191,6 @@
 			children = (
 				AFD1C47A28FD767D000B4D63 /* FeedStoreSpy.swift */,
 				AF42E64028FFAB7300D24498 /* FeedStoreTestsHelper.swift */,
-				AF42E64528FFACD400D24498 /* InvalidateCacheUseCaseTests.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -210,6 +209,7 @@
 				AF42E64428FFAC8600D24498 /* Helpers */,
 				AFE0C9CB28FC14710040FB3F /* CacheFeedUseCaseTests.swift */,
 				AFD1C47828FD714B000B4D63 /* LoadFeedFromCacheUseCaseTests.swift */,
+				AF42E64528FFACD400D24498 /* InvalidateCacheUseCaseTests.swift */,
 			);
 			path = "Feed Store";
 			sourceTree = "<group>";

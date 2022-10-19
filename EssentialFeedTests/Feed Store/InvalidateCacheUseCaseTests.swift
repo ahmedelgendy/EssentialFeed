@@ -30,25 +30,25 @@ class InvalidateCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
     
-    func test_validateCache_doesnotDeleteCacheLessThanSevenDaysOldCache() {
+    func test_validateCache_doesnotDeleteValidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let lessThanSevenDaysTimestamp = currentDate.adding(days: -7).adding(seconds: 1)
+        let validTimestamp = currentDate.minusFeedCacheMaxAge().adding(seconds: 1)
         sut.validateCache()
-        store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
+        store.completeRetrieval(with: items.localItems, timestamp: validTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
     }
     
-    func test_validateCache_deletesCacheOnSevenDaysOldCache() {
+    func test_validateCache_deletesInvalidCache() {
         let currentDate = Date()
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
-        let sevenDaysTimestamp = currentDate.adding(days: -7)
+        let invalidTimestamp = currentDate.minusFeedCacheMaxAge()
         
         sut.validateCache()
-        store.completeRetrieval(with: items.localItems, timestamp: sevenDaysTimestamp)
+        store.completeRetrieval(with: items.localItems, timestamp: invalidTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
     }
