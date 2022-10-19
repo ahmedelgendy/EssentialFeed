@@ -15,6 +15,14 @@ class InvalidateCacheUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [])
     }
 
+    func test_validateCache_deletesCacheOnRetrievalError() {
+        let (sut, store) = makeSUT()
+        let retrievalError = anyNSError()
+        sut.validateCache()
+        store.completeRetrieval(withError: retrievalError)
+        XCTAssertEqual(store.recievedMessages, [.retrieve, .deletion])
+    }
+    
     
     // MARK: - HELPERS
 

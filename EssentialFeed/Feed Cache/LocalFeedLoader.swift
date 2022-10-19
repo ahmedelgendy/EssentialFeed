@@ -55,6 +55,15 @@ final public class LocalFeedLoader {
         }
     }
     
+    public func validateCache() {
+        feedStore.retrieve { _ in
+            
+        }
+        feedStore.deleteCachedFeed { _ in
+            
+        }
+    }
+    
     private func cache(_ items: [FeedItem], completion: @escaping (SaveResult?) -> Void) {
         feedStore.insert(items.toLocal(), timestamp: self.currentDate()) { [weak self] error in
             guard self != nil else { return }
