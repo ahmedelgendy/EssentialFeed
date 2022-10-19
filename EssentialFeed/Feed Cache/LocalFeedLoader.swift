@@ -59,6 +59,8 @@ final public class LocalFeedLoader {
         feedStore.retrieve { [unowned self] result in
             switch result {
             case .empty: break
+            case .success(_, let timestamp) where validate(timestamp):
+                break
             default:
                 self.feedStore.deleteCachedFeed { _ in
                     

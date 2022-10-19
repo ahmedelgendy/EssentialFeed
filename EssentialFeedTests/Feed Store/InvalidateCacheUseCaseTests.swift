@@ -35,8 +35,7 @@ class InvalidateCacheUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT(currentDate: { currentDate })
         let items = uniqueItems()
         let lessThanSevenDaysTimestamp = currentDate.adding(days: -7).adding(seconds: 1)
-        
-        sut.load() { _ in }
+        sut.validateCache()
         store.completeRetrieval(with: items.localItems, timestamp: lessThanSevenDaysTimestamp)
         
         XCTAssertEqual(store.recievedMessages, [.retrieve])
