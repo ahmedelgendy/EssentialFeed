@@ -3,4 +3,54 @@
    uuid = "33CCA0DA-6D78-4D1D-92CF-3DBF66EDC4AB"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D87E0B1D-3384-4A46-A491-8BA6D4DDA9E5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EssentialFeedTests/Feed Store/CodableFeedStoreTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "expect(_:toRetrieve:file:line:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D87E0B1D-3384-4A46-A491-8BA6D4DDA9E5 - bb910f2479bb9a2c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (EssentialFeed.RetrieveCachedFeedResult) -&gt; () in EssentialFeedTests.CodableFeedStoreTests.expect(_: EssentialFeedTests.CodableFeedStore, toRetrieve: EssentialFeed.RetrieveCachedFeedResult, file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "EssentialFeedTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialFeedTests/Feed%20Store/CodableFeedStoreTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "152"
+                  endingLineNumber = "152"
+                  offsetFromSymbolStart = "2490">
+               </Location>
+               <Location
+                  uuid = "D87E0B1D-3384-4A46-A491-8BA6D4DDA9E5 - bb910f2479bb9a0d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (EssentialFeed.RetrieveCachedFeedResult) -&gt; () in EssentialFeedTests.CodableFeedStoreTests.expect(_: EssentialFeedTests.CodableFeedStore, toRetrieve: EssentialFeed.RetrieveCachedFeedResult, file: Swift.StaticString, line: Swift.UInt) -&gt; ()"
+                  moduleName = "EssentialFeedTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialFeedTests/Feed%20Store/CodableFeedStoreTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "151"
+                  endingLineNumber = "151"
+                  offsetFromSymbolStart = "2359">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
