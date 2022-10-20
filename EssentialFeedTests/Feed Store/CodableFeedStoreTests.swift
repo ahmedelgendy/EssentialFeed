@@ -63,8 +63,6 @@ class CodableFeedStore {
 }
 
 class CodableFeedStoreTests: XCTestCase {
-
-    private lazy var storeURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     
     override func setUp() {
         super.setUp()
@@ -77,11 +75,11 @@ class CodableFeedStoreTests: XCTestCase {
     }
     
     func clearStoreCache() {
-        try? FileManager.default.removeItem(at: storeURL)
+        try? FileManager.default.removeItem(at: storeURL())
     }
     
     func test_retrieve_deliversEmptyItemsOnEmptyCache() {
-        let sut = CodableFeedStore(storeURL: storeURL)
+        let sut = CodableFeedStore(storeURL: storeURL())
         let exp = expectation(description: "Wait for cache retrieval")
         sut.retrieve { result in
             switch result {
@@ -97,7 +95,7 @@ class CodableFeedStoreTests: XCTestCase {
 
     
     func test_retrieveTwice_hasNoSideEffectOnEmptyCache() {
-        let sut = CodableFeedStore(storeURL: storeURL)
+        let sut = CodableFeedStore(storeURL: storeURL())
         let exp = expectation(description: "Wait for cache retrieval")
         sut.retrieve { firstResult in
             sut.retrieve { secondResult in
@@ -114,7 +112,7 @@ class CodableFeedStoreTests: XCTestCase {
     }
     
     func test_retriveAfterInsertingToEmptyCache_returnsInsertedValues() {
-        let sut = CodableFeedStore(storeURL: storeURL)
+        let sut = CodableFeedStore(storeURL: storeURL())
         let expectedFeed = uniqueImageFeed().local
         let currentDate = Date()
         let exp = expectation(description: "Wait for cache retrieval")
@@ -135,4 +133,8 @@ class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
+    
+    private func storeURL() -> URL {
+        FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
+    }
 }
