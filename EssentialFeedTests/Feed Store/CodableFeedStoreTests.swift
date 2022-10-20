@@ -107,9 +107,8 @@ class CodableFeedStoreTests: XCTestCase {
         let currentDate = Date()
         let exp = expectation(description: "Wait for cache retrieval")
         sut.insert(expectedFeed, timestamp: currentDate) { error in
-            if error == nil {
-                exp.fulfill()
-            }
+            XCTAssertNil(error, "Expected feed to be inserted successfully")
+            exp.fulfill()
         }
         wait(for: [exp], timeout: 1)
         
