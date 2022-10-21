@@ -36,7 +36,7 @@ class CodableFeedStore {
             LocalFeedImage(id: id, description: description, location: location, imageURL: imageURL)
         }
     }
-
+    
     private let storeURL: URL
     
     init(storeURL: URL) {
@@ -57,12 +57,16 @@ class CodableFeedStore {
     }
     
     func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping FeedStore.DeletionCompletion) {
-        let codableFeedImages = feed.map { CodableFeedImage($0) }
-        let cache = Cache(feed: codableFeedImages, timestamp: timestamp)
-        let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(cache)
-        try! encoded.write(to: storeURL)
-        completion(nil)
+        do {
+            let codableFeedImages = feed.map(CodableFeedImage.init)
+            let cache = Cache(feed: codableFeedImages, timestamp: timestamp)
+            let encoder = JSONEncoder()
+            let encoded = try encoder.encode(cache)
+            try encoded.write(to: storeURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
 }
 
@@ -79,14 +83,14 @@ class CodableFeedStoreTests: XCTestCase {
     }
     
     func clearStoreCache() {
-        try? FileManager.default.removeItem(at: storeURL())
+        try? FileManager.default.removeItem(at: testSpecificStoreURL())
     }
     
     func test_retrieve_deliversEmptyItemsOnEmptyCache() {
         let sut = makeSUT()
         expect(sut, toRetrieve: .empty)
     }
-
+    
     
     func test_retrieveTwice_hasNoSideEffectOnEmptyCache() {
         let sut = makeSUT()
@@ -111,13 +115,13 @@ class CodableFeedStoreTests: XCTestCase {
     
     func test_retrieve_deliverFailureOnRetrievalError() {
         let sut = makeSUT()
-        try! "invalid data".write(to: storeURL(), atomically: false, encoding: .utf8)
+        try! "invalid data".write(to: testSpecificStoreURL(), atomically: false, encoding: .utf8)
         expect(sut, toRetrieve: .failure(anyNSError()))
     }
     
     func test_retrieve_hasNoSideEffectOnFailure() {
         let sut = makeSUT()
-        try! "invalid data".write(to: storeURL(), atomically: false, encoding: .utf8)
+        try! "invalid data".write(to: testSpecificStoreURL(), atomically: false, encoding: .utf8)
         expect(sut, toRetrieveTwice: .failure(anyNSError()))
     }
     
@@ -126,20 +130,27 @@ class CodableFeedStoreTests: XCTestCase {
         let feed = uniqueImageFeed().local
         let insertError = insert((local: feed, timestamp: Date()), to: sut)
         XCTAssertNil(insertError, "Expected feed to be inserted successfully")
-
+        
         let lastInsertedFeed = uniqueImageFeed().local
         let lastInsertedDate = Date()
         let lastInsertError = insert((local: lastInsertedFeed, timestamp: Date()), to: sut)
         XCTAssertNil(lastInsertError, "Expected feed to be inserted successfully")
-
+        
         expect(sut, toRetrieve: .found(local: lastInsertedFeed, timestamp: lastInsertedDate))
     }
-
+    
+    func test_insert_deliverErrorOnInsertionFailure() {
+        let storeURL = URL(string: "https://invalid-url.com")
+        let sut = makeSUT(storeURL: storeURL)
+        let feed = uniqueImageFeed().local
+        let insertError = insert((local: feed, timestamp: Date()), to: sut)
+        XCTAssertNotNil(insertError, "Expected feed to be inserted successfully")
+    }
     
     // MARK - Helpers
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> CodableFeedStore {
-        let sut = CodableFeedStore(storeURL: storeURL())
+    private func makeSUT(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CodableFeedStore {
+        let sut = CodableFeedStore(storeURL: storeURL ?? testSpecificStoreURL() )
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return sut
     }
@@ -178,7 +189,7 @@ class CodableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    private func storeURL() -> URL {
+    private func testSpecificStoreURL() -> URL {
         FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
     
