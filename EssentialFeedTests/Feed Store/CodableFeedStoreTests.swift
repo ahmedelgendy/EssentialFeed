@@ -155,6 +155,7 @@ class CodableFeedStoreTests: XCTestCase {
         return sut
     }
     
+    @discardableResult
     private func insert(_ cache: (local: [LocalFeedImage], timestamp: Date), to sut: CodableFeedStore) -> Error? {
         let exp = expectation(description: "Wait for cache insertion")
         var recievedError: Error?
