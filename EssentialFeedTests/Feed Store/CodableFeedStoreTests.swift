@@ -69,8 +69,13 @@ class CodableFeedStore {
         }
     }
     
-    func delete() {
-        try? FileManager.default.removeItem(at: storeURL)
+    func delete(completion: @escaping FeedStore.DeletionCompletion) {
+        do {
+            try FileManager.default.removeItem(at: storeURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
 }
 
@@ -156,8 +161,17 @@ class CodableFeedStoreTests: XCTestCase {
         let feed = uniqueImageFeed().local
         let insertError = insert((local: feed, timestamp: Date()), to: sut)
         XCTAssertNil(insertError, "Expected feed to be inserted successfully")
-        sut.delete()
+        let deletionError = deleteCache(from: sut)
+        XCTAssertNil(deletionError, "Expected feed to be deleted successfully")
         expect(sut, toRetrieve: .empty)
+    }
+    
+    func test_delete_deliversErrorOnDeletionFailure() {
+        let storeURL = URL(string: "https://invalid-url.com")
+        let sut = makeSUT(storeURL: storeURL)
+        let deletionError = deleteCache(from: sut)
+        XCTAssertNotNil(deletionError, "Expected feed to deliver deletion error")
+        expect(sut, toRetrieve: .failure(anyNSError()))
     }
     
     // MARK - Helpers
@@ -168,8 +182,15 @@ class CodableFeedStoreTests: XCTestCase {
         return sut
     }
     
-    func delete(_ sut: CodableFeedStore) {
-        sut.delete()
+    func deleteCache(from sut: CodableFeedStore) -> Error? {
+        let exp = expectation(description: "Wait for cache deletion")
+        var recievedError: Error?
+        sut.delete() { error in
+            recievedError = error
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+        return recievedError
     }
     
     @discardableResult
