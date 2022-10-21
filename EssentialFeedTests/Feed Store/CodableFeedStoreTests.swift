@@ -8,8 +8,8 @@
 import XCTest
 @testable import EssentialFeed
 
-class CodableFeedStore {
-    
+class CodableFeedStore: FeedStore {
+
     private struct Cache: Codable {
         let feed: [CodableFeedImage]
         let timestamp: Date
@@ -43,7 +43,7 @@ class CodableFeedStore {
         self.storeURL = storeURL
     }
     
-    func retrieve(completion: @escaping FeedStore.RetrievalCompletion) {
+    func retrieve(completion: @escaping RetrievalCompletion) {
         guard let data = try? Data(contentsOf: storeURL) else {
             return completion(.empty)
         }
@@ -56,7 +56,7 @@ class CodableFeedStore {
         }
     }
     
-    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping FeedStore.DeletionCompletion) {
+    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping DeletionCompletion) {
         do {
             let codableFeedImages = feed.map(CodableFeedImage.init)
             let cache = Cache(feed: codableFeedImages, timestamp: timestamp)
@@ -69,7 +69,7 @@ class CodableFeedStore {
         }
     }
     
-    func delete(completion: @escaping FeedStore.DeletionCompletion) {
+    func deleteCachedFeed(completion: @escaping DeletionCompletion) {
         guard FileManager.default.fileExists(atPath: storeURL.path) else {
             return completion(nil)
         }
@@ -194,7 +194,7 @@ class CodableFeedStoreTests: XCTestCase {
     func deleteCache(from sut: CodableFeedStore) -> Error? {
         let exp = expectation(description: "Wait for cache deletion")
         var recievedError: Error?
-        sut.delete() { error in
+        sut.deleteCachedFeed() { error in
             recievedError = error
             exp.fulfill()
         }
