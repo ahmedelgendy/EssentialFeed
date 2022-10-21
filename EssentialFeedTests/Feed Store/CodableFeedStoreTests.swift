@@ -71,7 +71,7 @@ class CodableFeedStoreTests: XCTestCase {
         
         let lastInsertedFeed = uniqueImageFeed().local
         let lastInsertedDate = Date()
-        let lastInsertError = insert((local: lastInsertedFeed, timestamp: Date()), to: sut)
+        let lastInsertError = insert((local: lastInsertedFeed, timestamp: lastInsertedDate), to: sut)
         XCTAssertNil(lastInsertError, "Expected feed to be inserted successfully")
         
         expect(sut, toRetrieve: .found(local: lastInsertedFeed, timestamp: lastInsertedDate))
@@ -96,7 +96,7 @@ class CodableFeedStoreTests: XCTestCase {
     }
     
     func test_delete_deliversErrorOnDeletionFailure() {
-        let sut = makeSUT(storeURL: cachesDirectory())
+        let sut = makeSUT(storeURL: homeDirectoryURL())
         let deletionError = deleteCache(from: sut)
         XCTAssertNotNil(deletionError, "Expected feed to deliver deletion error")
         expect(sut, toRetrieve: .empty)
@@ -107,6 +107,34 @@ class CodableFeedStoreTests: XCTestCase {
         let deletionError = deleteCache(from: sut)
         XCTAssertNil(deletionError, "Expected feed to be deleted successfully")
         expect(sut, toRetrieve: .empty)
+    }
+    
+    func test_multipleCalls_runningSerially() {
+        let sut = makeSUT()
+        let feed = uniqueImageFeed().local
+        var expectations = [XCTestExpectation]()
+        
+        let op1 = expectation(description: "Operation 1 completion")
+        sut.insert(feed, timestamp: Date()) { _ in
+            expectations.append(op1)
+            op1.fulfill()
+        }
+        
+        let op2 = expectation(description: "Operation 2 completion")
+        sut.deleteCachedFeed { _ in
+            expectations.append(op2)
+            op2.fulfill()
+        }
+        
+        let op3 = expectation(description: "Operation 3 completion")
+        sut.retrieve { _ in
+            expectations.append(op3)
+            op3.fulfill()
+        }
+        
+        wait(for: [op1, op2, op3], timeout: 5)
+        
+        XCTAssertEqual(expectations, [op1, op2, op3])
     }
     
     // MARK - Helpers
@@ -167,8 +195,9 @@ class CodableFeedStoreTests: XCTestCase {
         FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
     
-    private func cachesDirectory() -> URL {
-        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+    /// We don't have permission to delete home directory for current user
+    private func homeDirectoryURL() -> URL {
+        return FileManager.default.homeDirectoryForCurrentUser
     }
     
 }
