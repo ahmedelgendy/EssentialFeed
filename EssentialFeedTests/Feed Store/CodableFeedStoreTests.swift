@@ -68,6 +68,10 @@ class CodableFeedStore {
             completion(error)
         }
     }
+    
+    func delete() {
+        try? FileManager.default.removeItem(at: storeURL)
+    }
 }
 
 class CodableFeedStoreTests: XCTestCase {
@@ -144,7 +148,16 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = makeSUT(storeURL: storeURL)
         let feed = uniqueImageFeed().local
         let insertError = insert((local: feed, timestamp: Date()), to: sut)
-        XCTAssertNotNil(insertError, "Expected feed to be inserted successfully")
+        XCTAssertNotNil(insertError, "Expected feed to be inserted to be failed")
+    }
+    
+    func test_delete_clearPreviouslyInsertedCache() {
+        let sut = makeSUT()
+        let feed = uniqueImageFeed().local
+        let insertError = insert((local: feed, timestamp: Date()), to: sut)
+        XCTAssertNil(insertError, "Expected feed to be inserted successfully")
+        sut.delete()
+        expect(sut, toRetrieve: .empty)
     }
     
     // MARK - Helpers
@@ -153,6 +166,10 @@ class CodableFeedStoreTests: XCTestCase {
         let sut = CodableFeedStore(storeURL: storeURL ?? testSpecificStoreURL() )
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return sut
+    }
+    
+    func delete(_ sut: CodableFeedStore) {
+        sut.delete()
     }
     
     @discardableResult
