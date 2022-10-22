@@ -96,23 +96,21 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
         let sut = makeSUT()
         assertThatDeleteDeliversNoErrorOnEmptyCache(on: sut)
     }
-
-    func test_delete_deliversErrorOnDeletionError() {
-        let sut = makeSUT(storeURL: homeDirectoryURL())
-        let deletionError = deleteCache(from: sut)
-        XCTAssertNotNil(deletionError, "Expected feed to deliver deletion error")
-        expect(sut, toRetrieve: .empty)
-    }
     
     func test_delete_hasNoSideEffectsOnEmptyCache() {
         let sut = makeSUT()
         assertThatDeleteHasNoSideEffectsOnEmptyCache(on: sut)
     }
     
+    
+    func test_delete_deliversErrorOnDeletionError() {
+        let sut = makeSUT(storeURL: homeDirectoryURL())
+        assertThatDeleteDeliversErrorOnDeletionError(on: sut)
+    }
+    
     func test_delete_hasNoSideEffectsOnDeletionError() {
         let sut = makeSUT(storeURL: homeDirectoryURL())
-        deleteCache(from: sut)
-        expect(sut, toRetrieve: .empty)
+       assertThatDeleteHasNoSideEffectsOnDeletionError(on: sut)
     }
     
     func test_storeSideEffects_runSerially() {
