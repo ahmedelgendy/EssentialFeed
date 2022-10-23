@@ -19,14 +19,14 @@ class CoreDataFeedStore: FeedStore {
     }
     
     func retrieve(completion: @escaping RetrievalCompletion) {
-        
+        completion(.empty)
     }
     
 }
 
 class CoreDataFeedStoreTests: XCTestCase, FeedStoreSpecs {
     func test_retrieve_deliversEmptyOnEmptyCache() {
-//        assertThatRetrieveDeliversEmptyOnEmptyCache(on: makeSUT())
+        assertThatRetrieveDeliversEmptyOnEmptyCache(on: makeSUT())
     }
     
     func test_retrieve_hasNoSideEffectsOnEmptyCache() {
