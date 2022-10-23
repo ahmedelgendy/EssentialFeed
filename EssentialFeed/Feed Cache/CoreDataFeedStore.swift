@@ -64,8 +64,7 @@ public final class CoreDataFeedStore: FeedStore {
     }
     
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping DeletionCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
                 let managedCache = try ManagedCache.newUniqueInstance(in: context)
                 managedCache.timestamp = timestamp
@@ -79,8 +78,7 @@ public final class CoreDataFeedStore: FeedStore {
     }
     
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
                 try ManagedCache.find(in: context).map(context.delete).map(context.save)
                 completion(nil)
@@ -91,8 +89,7 @@ public final class CoreDataFeedStore: FeedStore {
     }
     
     public func retrieve(completion: @escaping RetrievalCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
                 if let cache = try ManagedCache.find(in: context) {
                     completion(.found(local: cache.localFeed, timestamp: cache.timestamp))
@@ -105,6 +102,12 @@ public final class CoreDataFeedStore: FeedStore {
         }
     }
     
+    private func perform(completion: @escaping (NSManagedObjectContext) -> ())  {
+        let context = self.context
+        context.perform {
+            completion(context)
+        }
+    }
 }
 
 private extension NSPersistentContainer {
