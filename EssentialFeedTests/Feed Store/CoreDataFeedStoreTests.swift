@@ -43,18 +43,6 @@ class CoreDataFeedStoreTests: XCTestCase, FeedStoreSpecs {
         assertThatInsertDeliversNoErrorOnNonEmptyCache(on: sut)
     }
     
-    func test_insert_deliversErrorOnInsertionError() {
-//        let storeURL = URL(string: "invalid://store-url")
-//        let sut = makeSUT(storeURL: storeURL)
-//        assertThatInsertDeliversErrorOnInsertionError(on: sut)
-    }
-    
-    func test_insert_hasNoSideEffectsOnInsertionError() {
-//        let storeURL = URL(string: "invalid://store-url")
-//        let sut = makeSUT(storeURL: storeURL)
-//        assertThatInsertHasNoSideEffectsOnInsertionError(on: sut)
-    }
-    
     func test_delete_emptiesPreviouslyInsertedCache() {
 //        let sut = makeSUT()
 //        assertThatDeleteEmptiesPreviouslyInsertedCache(on: sut)
@@ -66,8 +54,8 @@ class CoreDataFeedStoreTests: XCTestCase, FeedStoreSpecs {
     }
     
     func test_delete_deliversNoErrorOnEmptyCache() {
-//        let sut = makeSUT()
-//        assertThatDeleteDeliversNoErrorOnEmptyCache(on: sut)
+        let sut = makeSUT()
+        assertThatDeleteDeliversNoErrorOnEmptyCache(on: sut)
     }
     
     func test_delete_hasNoSideEffectsOnEmptyCache() {
