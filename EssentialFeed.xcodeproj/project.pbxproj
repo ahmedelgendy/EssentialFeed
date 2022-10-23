@@ -257,8 +257,8 @@
 				AFE0C9D228FC66C20040FB3F /* LocalFeedImage.swift */,
 				AF42E6472900007900D24498 /* FeedCachPolicy.swift */,
 				AF5612E6290226F80068A761 /* CodableFeedStore.swift */,
-				AF1836882905555C003D6B25 /* FeedStore.xcdatamodeld */,
 				AF18368B29055AFF003D6B25 /* CoreDataFeedStore.swift */,
+				AF1836882905555C003D6B25 /* FeedStore.xcdatamodeld */,
 			);
 			path = "Feed Cache";
 			sourceTree = "<group>";
