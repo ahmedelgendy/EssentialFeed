@@ -28,26 +28,14 @@ class CoreDataFeedStoreTests: XCTestCase, FeedStoreSpecs {
         assertThatRetrieveHasNoSideEffectsOnNonEmptyCache(on: sut)
     }
     
-    func test_retrieve_deliversFailureOnRetrievalError() {
-//        let sut = makeSUT()
-//        try! "invalid data".write(to: testSpecificStoreURL(), atomically: false, encoding: .utf8)
-//        assertThatRetrieveDeliversFailureOnRetrievalError(on: sut)
-    }
-    
-    func test_retrieve_hasNoSideEffectsOnFailure() {
-//        let sut = makeSUT()
-//        try! "invalid data".write(to: testSpecificStoreURL(), atomically: false, encoding: .utf8)
-//        assertThatRetrieveHasNoSideEffectsOnFailure(on: sut)
-    }
-    
     func test_insert_overridesPreviouslyInsertedCacheValues() {
 //        let sut = makeSUT()
 //        assertThatInsertOverridesPreviouslyInsertedCacheValues(on: sut)
     }
     
     func test_insert_deliversNoErrorOnEmptyCache() {
-//        let sut = makeSUT()
-//        assertThatInsertDeliversNoErrorOnEmptyCache(on: sut)
+        let sut = makeSUT()
+        assertThatInsertDeliversNoErrorOnEmptyCache(on: sut)
     }
     
     func test_insert_deliversNoErrorOnNonEmptyCache() {
