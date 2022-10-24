@@ -43,7 +43,7 @@ class URLSessionHTTPClientTests: XCTestCase {
 
         makeSUT().get(from: url) { result in
             switch result {
-            case .success(_, _):
+            case .success:
                 XCTFail("expected error \(expectedError), found success instead")
             case .failure(let error as NSError):
                 XCTAssertEqual(error.domain, expectedError.domain)
@@ -87,7 +87,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     private func resultValuesFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> (data: Data, response: HTTPURLResponse)? {
         let result = resultFor(data: data, response: response, error: error)
         switch result {
-        case let .success(recievedData, recievedResponse):
+        case let .success((recievedData, recievedResponse)):
             return (data: recievedData, response: recievedResponse)
         case .failure:
             XCTFail("Expected Success, found \(result) instead")
@@ -106,12 +106,12 @@ class URLSessionHTTPClientTests: XCTestCase {
         }
     }
     
-    private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HTTPClientResult {
+    private func resultFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HTTPClient.Result {
         let url = anyURL()
         let exp = expectation(description: "Wait response")
         URLProtocolStub.stub(url: url, error: error, data: data, response: response)
         
-        var returnedResult: HTTPClientResult!
+        var returnedResult: HTTPClient.Result!
         makeSUT().get(from: url) { result in
             returnedResult = result
             exp.fulfill()

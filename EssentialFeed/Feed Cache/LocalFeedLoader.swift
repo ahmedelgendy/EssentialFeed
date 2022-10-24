@@ -20,7 +20,7 @@ final public class LocalFeedLoader {
 }
 
 extension LocalFeedLoader: FeedLoader {
-    public typealias LoadResult = LoadFeedResult
+    public typealias LoadResult = FeedLoader.Result
 
     public func load(completion: @escaping (LoadResult) -> Void) {
         feedStore.retrieve { [weak self] result in
@@ -38,15 +38,16 @@ extension LocalFeedLoader: FeedLoader {
 }
 
 extension LocalFeedLoader {
-    public typealias SaveResult = Error?
+    public typealias SaveResult = Result<Void, Error>
 
     public func save(_ feed: [FeedImage], completion: @escaping (SaveResult?) -> Void) {
-        feedStore.deleteCachedFeed { [weak self] error in
+        feedStore.deleteCachedFeed { [weak self] result in
             guard let self = self else { return }
-            if let cacheDeletionError = error {
-                completion(cacheDeletionError)
-            } else {
+            switch result {
+            case .success:
                 self.cache(feed, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
