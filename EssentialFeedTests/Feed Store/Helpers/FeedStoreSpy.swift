@@ -38,20 +38,20 @@ class FeedStoreSpy: FeedStore {
         recievedMessages.append(.retrieve)
     }
     
-    func completeDeletion(withError error: Error?, index: Int = 0) {
-        deletionCompletions[index](error)
+    func completeDeletion(withError error: Error, index: Int = 0) {
+        deletionCompletions[index](.failure(error))
     }
     
     func completeDeletionSuccessfully(index: Int = 0) {
-        deletionCompletions[index](nil)
+        deletionCompletions[index](.success(()))
     }
     
-    func completeInsertion(withError error: Error?, index: Int = 0) {
-        insertionCompletions[index](error)
+    func completeInsertion(withError error: Error, index: Int = 0) {
+        insertionCompletions[index](.failure(error))
     }
     
     func completeInsertionSuccessfully(index: Int = 0) {
-        insertionCompletions[index](nil)
+        insertionCompletions[index](.success(()))
     }
     
     func completeRetrieval(withError error: Error, index: Int = 0) {
