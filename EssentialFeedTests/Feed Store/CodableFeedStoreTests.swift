@@ -104,12 +104,12 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
     
     
     func test_delete_deliversErrorOnDeletionError() {
-        let sut = makeSUT(storeURL: homeDirectoryURL())
+        let sut = makeSUT(storeURL: noDeletePermissionURL())
         assertThatDeleteDeliversErrorOnDeletionError(on: sut)
     }
     
     func test_delete_hasNoSideEffectsOnDeletionError() {
-        let sut = makeSUT(storeURL: homeDirectoryURL())
+        let sut = makeSUT(storeURL: noDeletePermissionURL())
        assertThatDeleteHasNoSideEffectsOnDeletionError(on: sut)
     }
     
@@ -131,8 +131,8 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
     }
     
     /// We don't have permission to delete home directory for current user
-    private func homeDirectoryURL() -> URL {
-        return FileManager.default.homeDirectoryForCurrentUser
+    private func noDeletePermissionURL() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .systemDomainMask).first!
     }
     
 }
