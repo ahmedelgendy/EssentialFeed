@@ -34,28 +34,18 @@ class FeedViewController: UITableViewController {
 
 final class FeedViewControllerTests: XCTestCase {
 
-    func test_init_doesNotLoadFeed() {
-        let (_, loader) = makeSUT()
-        XCTAssertEqual(loader.loadCallCount, 0)
-    }
-    
-    func test_viewDidLoad_loadsFeed() {
+    func test_loadFeedActions_requestFeedFromLoader() {
         let (sut, loader) = makeSUT()
+        XCTAssertEqual(loader.loadCallCount, 0)
+        
         sut.loadViewIfNeeded()
         XCTAssertEqual(loader.loadCallCount, 1)
-    }
-    
-    func test_userInitiatedFeedReload_loadsFeed() {
-        let (sut, loader) = makeSUT()
-        sut.loadViewIfNeeded()
+
         sut.refreshControl?.simulatePullToRefresh()
         XCTAssertEqual(loader.loadCallCount, 2)
         
         sut.refreshControl?.simulatePullToRefresh()
         XCTAssertEqual(loader.loadCallCount, 3)
-        
-        sut.refreshControl?.simulatePullToRefresh()
-        XCTAssertEqual(loader.loadCallCount, 4)
     }
     
     func test_viewDidLoad_showsLoadingIndicator() {
