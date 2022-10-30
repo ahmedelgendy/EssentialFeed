@@ -43,9 +43,9 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_loadFeedCompletion_rendersSuccessfullyLoadedFeed() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
-        let image2 = uniqueFeed(description: "some desc", location: nil)
+        let image0 = feedImage(description: "some desc", location: "some location")
+        let image1 = feedImage(description: nil, location: "some location")
+        let image2 = feedImage(description: "some desc", location: nil)
         
         sut.loadViewIfNeeded()
         
@@ -61,9 +61,9 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_loadFeedCompletion_doesNotAlterCurrentRenderingStateOnError() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
-        let image2 = uniqueFeed(description: "some desc", location: nil)
+        let image0 = feedImage(description: "some desc", location: "some location")
+        let image1 = feedImage(description: nil, location: "some location")
+        let image2 = feedImage(description: "some desc", location: nil)
         let feed = [image0, image1, image2]
         
         sut.loadViewIfNeeded()
@@ -77,8 +77,8 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_feedImageView_loadsImageURLWhenVisible() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
+        let image0 = feedImage(description: "some desc", location: "some location")
+        let image1 = feedImage(description: nil, location: "some location")
         let feed = [image0, image1]
         
         sut.loadViewIfNeeded()
@@ -91,8 +91,8 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_feedImageView_cancelImageURLWhenInVisible() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
+        let image0 = feedImage(description: "some desc", location: "some location")
+        let image1 = feedImage(description: nil, location: "some location")
         let feed = [image0, image1]
         
         sut.loadViewIfNeeded()
@@ -105,8 +105,8 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_feedImageViewLoadingIndicator_isVisibleWhileLoadingImage() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
+        let image0 = feedImage(description: "some desc", location: "some location")
+        let image1 = feedImage(description: nil, location: "some location")
         
         sut.loadViewIfNeeded()
         loader.completeFeedLoading(with: [image0, image1], at: 0)
@@ -128,8 +128,8 @@ final class FeedViewControllerTests: XCTestCase {
     
     func test_feedImageView_rendersImageLoadedFromURL() {
         let (sut, loader) = makeSUT()
-        let image0 = uniqueFeed(description: "some desc", location: "some location")
-        let image1 = uniqueFeed(description: nil, location: "some location")
+        let image0 = feedImage(url: URL(string: "https://anyURL1.com")!)
+        let image1 = feedImage(url: URL(string: "https://anyURL2.com")!)
         
         sut.loadViewIfNeeded()
         loader.completeFeedLoading(with: [image0, image1], at: 0)
@@ -170,8 +170,8 @@ final class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(cell?.locationText, image.location, file: file, line: line)
     }
     
-    private func uniqueFeed(description: String?, location: String?) -> FeedImage {
-        FeedImage(id: UUID(), description: description, location: location, imageURL: anyURL())
+    private func feedImage(description: String? = nil, location: String? = nil, url: URL = anyURL()) -> FeedImage {
+        FeedImage(id: UUID(), description: description, location: location, imageURL: url)
     }
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
