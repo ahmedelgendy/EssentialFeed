@@ -64,7 +64,11 @@ public final class FeedViewController: UITableViewController {
         cell.descriptionLabel.text = cellModel.description
         cell.locationLabel.text = cellModel.location
         cell.locationContainer.startShimmering()
-        tasks[indexPath] = imageLoader?.loadImageData(from: cellModel.imageURL) { [weak cell] _ in
+        cell.feedImageView.image = nil
+        tasks[indexPath] = imageLoader?.loadImageData(from: cellModel.imageURL) { [weak cell] result in
+            let data = try? result.get()
+            let image = data.map(UIImage.init) ?? nil
+            cell?.feedImageView.image = image
             cell?.locationContainer.stopShimmering()
         }
         return cell

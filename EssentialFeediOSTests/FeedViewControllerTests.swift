@@ -11,14 +11,14 @@ import EssentialFeed
 import EssentialFeediOS
 
 final class FeedViewControllerTests: XCTestCase {
-
+    
     func test_loadFeedActions_requestFeedFromLoader() {
         let (sut, loader) = makeSUT()
         XCTAssertEqual(loader.loadFeedCallCount, 0, "Expected no loading requests before view loading")
         
         sut.loadViewIfNeeded()
         XCTAssertEqual(loader.loadFeedCallCount, 1, "Expected a loading request once the view is loaded")
-
+        
         sut.refreshControl?.simulatePullToRefresh()
         XCTAssertEqual(loader.loadFeedCallCount, 2, "Expected another loading request once user initiates a load")
         
@@ -30,13 +30,13 @@ final class FeedViewControllerTests: XCTestCase {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         XCTAssertTrue(sut.isShowingLoadingIndicator)
-
+        
         loader.completeFeedLoading(at: 0)
         XCTAssertFalse(sut.isShowingLoadingIndicator)
- 
+        
         sut.simulateFeedReload()
         XCTAssertTrue(sut.isShowingLoadingIndicator)
-
+        
         loader.completeFeedLoadingWithError(at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator)
     }
@@ -46,11 +46,11 @@ final class FeedViewControllerTests: XCTestCase {
         let image0 = uniqueFeed(description: "some desc", location: "some location")
         let image1 = uniqueFeed(description: nil, location: "some location")
         let image2 = uniqueFeed(description: "some desc", location: nil)
-
+        
         sut.loadViewIfNeeded()
         
         assertThat(sut, isRenderring: [])
-
+        
         loader.completeFeedLoading(with: [image0], at: 0)
         assertThat(sut, isRenderring: [image0])
         
@@ -126,6 +126,30 @@ final class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false)
     }
     
+    func test_feedImageView_rendersImageLoadedFromURL() {
+        let (sut, loader) = makeSUT()
+        let image0 = uniqueFeed(description: "some desc", location: "some location")
+        let image1 = uniqueFeed(description: nil, location: "some location")
+        
+        sut.loadViewIfNeeded()
+        loader.completeFeedLoading(with: [image0, image1], at: 0)
+        
+        let view0 = sut.simulateFeedImageViewVisible(at: 0)
+        let view1 = sut.simulateFeedImageViewVisible(at: 1)
+        
+        XCTAssertEqual(view0?.renderedImage, .none)
+        XCTAssertEqual(view1?.renderedImage, .none)
+        let image0Data = UIImage.make(withColor: .cyan).pngData()!
+        loader.completeImageLoading(with: image0Data, at: 0)
+        XCTAssertEqual(view0?.renderedImage, image0Data)
+        XCTAssertEqual(view1?.renderedImage, .none)
+        
+        let image1Data = UIImage.make(withColor: .blue).pngData()!
+        loader.completeImageLoading(with: image1Data, at: 1)
+        XCTAssertEqual(view0?.renderedImage, image0Data)
+        XCTAssertEqual(view1?.renderedImage, image1Data)
+    }
+    
     // MARK: Helper Methods
     
     private func assertThat(_ sut: FeedViewController, isRenderring images: [FeedImage], file: StaticString = #filePath, line: UInt = #line) {
@@ -161,7 +185,7 @@ final class FeedViewControllerTests: XCTestCase {
     class LoaderSpy: FeedLoader, FeedImageLoaderDataLoader {
         
         // MARK - FeedLoader
-
+        
         private(set) var loadFeedCallCount = 0
         private var feedRequests: [(FeedLoader.Result) -> Void] = []
         
@@ -178,7 +202,7 @@ final class FeedViewControllerTests: XCTestCase {
             let error = NSError(domain: "any domain", code: 0)
             feedRequests[index](.failure(error))
         }
-
+        
         // MARK - FeedImageLoaderDataLoader
         var loadedImagesURL: [URL] {
             imageLoadingRequests.map(\.url)
@@ -199,12 +223,12 @@ final class FeedViewControllerTests: XCTestCase {
             }
         }
         
-        func completeImageLoading(at index: Int) {
-            imageLoadingRequests[index].result(.success(Data()))
+        func completeImageLoading(with data: Data = Data(), at index: Int) {
+            imageLoadingRequests[index].result(.success(data))
         }
-
+        
     }
-
+    
 }
 
 private extension FeedViewController {
@@ -246,6 +270,10 @@ private extension FeedViewController {
 
 extension FeedImageCell {
     
+    var renderedImage: Data? {
+        return feedImageView.image?.pngData()
+    }
+    
     var isShowingLocation: Bool {
         !locationContainer.isHidden
     }
@@ -270,5 +298,18 @@ private extension UIRefreshControl {
                 (target as NSObject).perform(Selector($0))
             }
         }
+    }
+}
+
+private extension UIImage {
+    static func make(withColor color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(color.cgColor)
+        context.fill(rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
     }
 }
