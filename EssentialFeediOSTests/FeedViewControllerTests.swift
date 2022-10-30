@@ -37,7 +37,7 @@ final class FeedViewControllerTests: XCTestCase {
         sut.simulateFeedReload()
         XCTAssertTrue(sut.isShowingLoadingIndicator)
 
-        loader.completeFeedLoading(at: 1)
+        loader.completeFeedLoadingWithError(at: 1)
         XCTAssertFalse(sut.isShowingLoadingIndicator)
     }
     
@@ -57,6 +57,22 @@ final class FeedViewControllerTests: XCTestCase {
         sut.simulateFeedReload()
         loader.completeFeedLoading(with: [image0, image1, image2], at: 1)
         assertThat(sut, isRenderring: [image0, image1, image2])
+    }
+    
+    func test_loadFeedCompletion_doesNotAlterCurrentRenderingStateOnError() {
+        let (sut, loader) = makeSUT()
+        let image0 = uniqueFeed(description: "some desc", location: "some location")
+        let image1 = uniqueFeed(description: nil, location: "some location")
+        let image2 = uniqueFeed(description: "some desc", location: nil)
+        let feed = [image0, image1, image2]
+        
+        sut.loadViewIfNeeded()
+        
+        loader.completeFeedLoading(with: feed, at: 0)
+        
+        sut.simulateFeedReload()
+        loader.completeFeedLoadingWithError(at: 1)
+        assertThat(sut, isRenderring: feed)
     }
     
     // MARK: Helper Methods
@@ -103,6 +119,11 @@ final class FeedViewControllerTests: XCTestCase {
         
         func completeFeedLoading(with feed: [FeedImage] = [], at index: Int = 0) {
             loadingCompletions[index](.success(feed))
+        }
+        
+        func completeFeedLoadingWithError(at index: Int) {
+            let error = NSError(domain: "any domain", code: 0)
+            loadingCompletions[index](.failure(error))
         }
 
     }
