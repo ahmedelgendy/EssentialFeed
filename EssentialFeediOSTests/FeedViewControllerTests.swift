@@ -173,6 +173,20 @@ final class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(view1?.isShowingRetryButton, true)
     }
     
+    func test_feedImageViewRetryAction_retriesImageLoad() {
+        let (sut, loader) = makeSUT()
+        let image0 = feedImage()
+        
+        sut.loadViewIfNeeded()
+        loader.completeFeedLoading(with: [image0], at: 0)
+        
+        let view0 = sut.simulateFeedImageViewVisible(at: 0)
+        loader.completeImageLoadingWithError(at: 0)
+        view0?.simulateRetryButtonTapped()
+                
+        XCTAssertEqual(loader.loadedImagesURL, [image0.imageURL, image0.imageURL])
+    }
+    
     func test_feedImageView_preloadsImageURLWhenNearVisible() {
         let (sut, loader) = makeSUT()
         let image0 = feedImage(url: URL(string: "https://anyurl0.com")!)
@@ -367,6 +381,20 @@ extension FeedImageCell {
     
     var isShowingRetryButton: Bool {
         retryButton.isHidden == false
+    }
+    
+    func simulateRetryButtonTapped() {
+        retryButton.simulateButtonTapped()
+    }
+}
+
+private extension UIButton {
+    func simulateButtonTapped() {
+        allTargets.forEach { target in
+            actions(forTarget: target, forControlEvent: .touchUpInside)?.forEach {
+                (target as NSObject).perform(Selector($0))
+            }
+        }
     }
 }
 
