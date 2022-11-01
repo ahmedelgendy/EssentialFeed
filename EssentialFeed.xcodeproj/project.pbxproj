@@ -58,6 +58,7 @@
 		AFEA719328F8D20900ECE13B /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFEA719228F8D20900ECE13B /* URLSessionHTTPClient.swift */; };
 		AFFF60472910563C0038E241 /* FeedImageLoaderDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF60462910563C0038E241 /* FeedImageLoaderDataLoader.swift */; };
 		AFFF6049291059F00038E241 /* FeedRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF6048291059F00038E241 /* FeedRefreshController.swift */; };
+		AFFF604B291169DF0038E241 /* FeedImageCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF604A291169DF0038E241 /* FeedImageCellController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,6 +163,7 @@
 		AFEA719228F8D20900ECE13B /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		AFFF60462910563C0038E241 /* FeedImageLoaderDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageLoaderDataLoader.swift; sourceTree = "<group>"; };
 		AFFF6048291059F00038E241 /* FeedRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRefreshController.swift; sourceTree = "<group>"; };
+		AFFF604A291169DF0038E241 /* FeedImageCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageCellController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -433,6 +435,7 @@
 			children = (
 				AFD26B5E290DC7BB0091E9B3 /* FeedViewController.swift */,
 				AFFF6048291059F00038E241 /* FeedRefreshController.swift */,
+				AFFF604A291169DF0038E241 /* FeedImageCellController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -750,6 +753,7 @@
 				AFD26B64290E94510091E9B3 /* FeedImageCell.swift in Sources */,
 				AFFF6049291059F00038E241 /* FeedRefreshController.swift in Sources */,
 				AFD26B66290ED3180091E9B3 /* UIView+Shimmering.swift in Sources */,
+				AFFF604B291169DF0038E241 /* FeedImageCellController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
