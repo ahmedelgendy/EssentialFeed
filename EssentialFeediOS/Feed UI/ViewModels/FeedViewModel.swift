@@ -8,11 +8,11 @@
 import EssentialFeed
 
 final class FeedViewModel {
- 
+    typealias Observer<T> = (T) -> Void
     private let loader: FeedLoader
     
-    var onLoadingStateChange: ((Bool) -> ())?
-    var onFeedLoaded: (([FeedImage]) -> ())?
+    var onLoadingStateChange: Observer<Bool>?
+    var onFeedLoaded: Observer<[FeedImage]>?
 
     init(loader: FeedLoader) {
         self.loader = loader
