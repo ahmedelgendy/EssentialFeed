@@ -9,7 +9,15 @@ import UIKit
 
 extension UIView {
     public var isShimmering: Bool {
-        return layer.mask?.animation(forKey: shimmerAnimationKey) != nil
+        get {
+            layer.mask?.animation(forKey: shimmerAnimationKey) != nil
+        } set {
+            if newValue {
+                startShimmering()
+            } else {
+                stopShimmering()
+            }
+        }
     }
 
     private var shimmerAnimationKey: String {
