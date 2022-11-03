@@ -1,5 +1,5 @@
 //
-//  FeedViewModel.swift
+//  FeedPresenter.swift
 //  EssentialFeediOS
 //
 //  Created by Ahmed Elgendy on 1.11.2022.
@@ -15,7 +15,7 @@ protocol FeedView {
     func display(feed: [FeedImage])
 }
 
-final class FeedViewPresenter {
+final class FeedPresenter {
     typealias Observer<T> = (T) -> Void
     private let loader: FeedLoader
     

@@ -10,9 +10,9 @@ import UIKit
 class FeedRefreshController: NSObject, FeedLoadingView {
     private(set) lazy var view = loadView()
 
-    private let feedPresenter: FeedViewPresenter
+    private let feedPresenter: FeedPresenter
     
-    init(feedPresenter: FeedViewPresenter) {
+    init(feedPresenter: FeedPresenter) {
         self.feedPresenter = feedPresenter
     }
     
