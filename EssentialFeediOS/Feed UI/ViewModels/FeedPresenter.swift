@@ -25,41 +25,45 @@ protocol FeedView {
 final class FeedPresenter {
     typealias Observer<T> = (T) -> Void
     
-    var loadingView: FeedLoadingView?
-    var feedView: FeedView?
+    private var loadingView: FeedLoadingView
+    private var feedView: FeedView
+    
+    init(loadingView: FeedLoadingView, feedView: FeedView) {
+        self.loadingView = loadingView
+        self.feedView = feedView
+    }
     
     func didStartLoadingFeed() {
-        loadingView?.display(FeedLoadingViewModel(isLoading: true))
+        loadingView.display(FeedLoadingViewModel(isLoading: true))
     }
     
     func didFinishLoadingFeed(with feed: [FeedImage]) {
-        feedView?.display(FeedViewModel(feed: feed))
-        loadingView?.display(FeedLoadingViewModel(isLoading: false))
+        feedView.display(FeedViewModel(feed: feed))
+        loadingView.display(FeedLoadingViewModel(isLoading: false))
     }
     
     func didFinishLoading(with error: Error) {
-        loadingView?.display(FeedLoadingViewModel(isLoading: false))
+        loadingView.display(FeedLoadingViewModel(isLoading: false))
     }
     
 }
 
 final class FeedLoaderPresentationAdapter {
     private let loader: FeedLoader
-    private let presenter: FeedPresenter
+    var presenter: FeedPresenter?
     
-    init(loader: FeedLoader, presenter: FeedPresenter) {
+    init(loader: FeedLoader) {
         self.loader = loader
-        self.presenter = presenter
     }
     
     func loadFeed() {
-        presenter.didStartLoadingFeed()
+        presenter?.didStartLoadingFeed()
         loader.load { [weak self] result in
             switch result {
             case .success(let feed):
-                self?.presenter.didFinishLoadingFeed(with: feed)
+                self?.presenter?.didFinishLoadingFeed(with: feed)
             case .failure(let error):
-                self?.presenter.didFinishLoading(with: error)
+                self?.presenter?.didFinishLoading(with: error)
             }
         }
     }
