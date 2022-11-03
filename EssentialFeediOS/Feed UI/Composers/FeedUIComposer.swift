@@ -51,7 +51,7 @@ final class WeakRefProxy<T: AnyObject> {
 }
 
 extension WeakRefProxy: FeedLoadingView where T: FeedLoadingView {
-    func display(isLoading: Bool) {
-        object?.display(isLoading: isLoading)
+    func display(_ viewModel: FeedLoadingViewModel) {
+        object?.display(viewModel)
     }
 }
