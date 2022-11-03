@@ -14,8 +14,12 @@ protocol FeedLoadingView {
     func display(_ viewModel: FeedLoadingViewModel)
 }
 
+struct FeedViewModel {
+    let feed: [FeedImage]
+}
+
 protocol FeedView {
-    func display(feed: [FeedImage])
+    func display(_ viewModel: FeedViewModel)
 }
 
 final class FeedPresenter {
@@ -34,9 +38,9 @@ final class FeedPresenter {
         loader.load { [weak self] result in
             guard let self = self else { return }
             if let feed = try? result.get() {
-                self.feedView?.display(feed: feed)
+                self.feedView?.display(FeedViewModel(feed: feed))
             }
-            self.loadingView?.display(FeedLoadingViewModel(isLoading: true))
+            self.loadingView?.display(FeedLoadingViewModel(isLoading: false))
         }
     }
 }
