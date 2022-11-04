@@ -18,11 +18,11 @@ final class FeedUIIntegrationTests: XCTestCase {
         XCTAssertEqual(sut.title, localized("FEED_VIEW_TITLE"))
     }
     
-    func localized(_ key: String) -> String {
+    func localized(_ key: String, file: StaticString = #filePath, line: UInt = #line) -> String {
         let bundle = Bundle(for: FeedViewController.self)
         let title = bundle.localizedString(forKey: key, value: nil, table: "Feed")
         if title == key {
-            XCTFail("No localized value found for \(key)")
+            XCTFail("No localized value found for \(key)", file: file, line: line)
         }
         return title
     }
