@@ -12,17 +12,10 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     var tableModel = [FeedImageCellController](){
         didSet { tableView.reloadData() }
     }
-    private var refreshController: FeedRefreshController?
-
-    convenience init(refreshController: FeedRefreshController) {
-        self.init()
-        self.refreshController = refreshController
-    }
+    var refreshController: FeedRefreshController?
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.prefetchDataSource = self
         refreshControl = refreshController?.view
         refreshController?.refresh()
         
@@ -33,7 +26,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
     
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return cellConroller(at: indexPath).view()
+        return cellConroller(at: indexPath).view(in: tableView)
     }
     
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
