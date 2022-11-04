@@ -61,7 +61,7 @@
 		AFE3C8D92914AC5F00992A73 /* Feed.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AFE3C8D82914AC5F00992A73 /* Feed.storyboard */; };
 		AFE3C8DB2914BF0200992A73 /* UITableView+Dequeuing.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE3C8DA2914BF0200992A73 /* UITableView+Dequeuing.swift */; };
 		AFE3C8DD2914C09400992A73 /* UIImageView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE3C8DC2914C09400992A73 /* UIImageView+Animation.swift */; };
-		AFE3C8DF29153BDE00992A73 /* Feed.strings in Resources */ = {isa = PBXBuildFile; fileRef = AFE3C8DE29153BDE00992A73 /* Feed.strings */; };
+		AFE3C8E029153DB700992A73 /* Feed.strings in Resources */ = {isa = PBXBuildFile; fileRef = AFE3C8E229153DB700992A73 /* Feed.strings */; };
 		AFEA719328F8D20900ECE13B /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFEA719228F8D20900ECE13B /* URLSessionHTTPClient.swift */; };
 		AFFF60472910563C0038E241 /* FeedImageLoaderDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF60462910563C0038E241 /* FeedImageLoaderDataLoader.swift */; };
 		AFFF604B291169DF0038E241 /* FeedImageCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF604A291169DF0038E241 /* FeedImageCellController.swift */; };
@@ -174,7 +174,8 @@
 		AFE3C8D82914AC5F00992A73 /* Feed.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Feed.storyboard; sourceTree = "<group>"; };
 		AFE3C8DA2914BF0200992A73 /* UITableView+Dequeuing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Dequeuing.swift"; sourceTree = "<group>"; };
 		AFE3C8DC2914C09400992A73 /* UIImageView+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Animation.swift"; sourceTree = "<group>"; };
-		AFE3C8DE29153BDE00992A73 /* Feed.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Feed.strings; sourceTree = "<group>"; };
+		AFE3C8E129153DB700992A73 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Feed.strings; sourceTree = "<group>"; };
+		AFE3C8E329153E2500992A73 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Feed.strings; sourceTree = "<group>"; };
 		AFEA719228F8D20900ECE13B /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 		AFFF60462910563C0038E241 /* FeedImageLoaderDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageLoaderDataLoader.swift; sourceTree = "<group>"; };
 		AFFF604A291169DF0038E241 /* FeedImageCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageCellController.swift; sourceTree = "<group>"; };
@@ -492,7 +493,7 @@
 				AFE3C8D02912C98C00992A73 /* FeedImageViewPresenter.swift */,
 				AFE3C8D229140BA100992A73 /* FeedViewModel.swift */,
 				AFE3C8D429140BBB00992A73 /* FeedLoadingViewModel.swift */,
-				AFE3C8DE29153BDE00992A73 /* Feed.strings */,
+				AFE3C8E229153DB700992A73 /* Feed.strings */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -667,6 +668,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = AF086DDD28EA15FA005657B4;
 			productRefGroup = AF086DE828EA15FA005657B4 /* Products */;
@@ -709,7 +711,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AFE3C8DF29153BDE00992A73 /* Feed.strings in Resources */,
+				AFE3C8E029153DB700992A73 /* Feed.strings in Resources */,
 				AFE3C8D92914AC5F00992A73 /* Feed.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -854,11 +856,24 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		AFE3C8E229153DB700992A73 /* Feed.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AFE3C8E129153DB700992A73 /* en */,
+				AFE3C8E329153E2500992A73 /* ar */,
+			);
+			name = Feed.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		AF086DF928EA15FA005657B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -923,6 +938,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
