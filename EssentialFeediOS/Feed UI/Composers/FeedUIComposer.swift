@@ -51,7 +51,7 @@ private final class FeedViewAdapter: FeedView {
         controller?.tableModel = viewModel.feed.map { image in
             let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefProxy<FeedImageCellController>, UIImage>(
                 model: image,
-                imageLoader: imageLoader
+                imageLoader: MainQueueDispatchDecorator(decoratee: imageLoader)
             )
             let view = FeedImageCellController(delegate: adapter)
             adapter.presenter = FeedImagePresenter<WeakRefProxy<FeedImageCellController>, UIImage>(
@@ -133,6 +133,16 @@ final class MainQueueDispatchDecorator<T> {
 extension MainQueueDispatchDecorator: FeedLoader where T == FeedLoader {
     func load(completion: @escaping (FeedLoader.Result) -> Void) {
         decoratee.load { [weak self] result in
+            self?.dispatch {
+                completion(result)
+            }
+        }
+    }
+}
+
+extension MainQueueDispatchDecorator: FeedImageLoaderDataLoader where T == FeedImageLoaderDataLoader {
+    func loadImageData(from url: URL, completion: @escaping (FeedImageLoaderDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
+        decoratee.loadImageData(from: url) { [weak self] result in
             self?.dispatch {
                 completion(result)
             }
