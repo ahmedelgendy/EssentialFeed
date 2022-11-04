@@ -7,44 +7,41 @@
 
 import UIKit
 
-final class FeedImageCellController {
-    private let viewModel: FeedImageViewModel<UIImage>
+protocol FeedImageCellControllerDelegate {
+    func didRequestImage()
+    func didCancelImageRequest()
+}
+
+final class FeedImageCellController: FeedImageView {
     
-    init(viewModel: FeedImageViewModel<UIImage>) {
-        self.viewModel = viewModel
+    private lazy var cell = FeedImageCell()
+    private let delegate: FeedImageCellControllerDelegate
+
+    init(delegate: FeedImageCellControllerDelegate) {
+        self.delegate = delegate
     }
     
     public func view() -> UITableViewCell {
-        let cell = binded(FeedImageCell())
-        viewModel.loadImage()
+        delegate.didRequestImage()
         return cell
     }
     
-    private func binded(_ cell: FeedImageCell) -> FeedImageCell {
+    func display(_ viewModel: FeedImageViewModel<UIImage>) {
         cell.locationContainer.isHidden = !viewModel.hasLocation
         cell.descriptionLabel.text = viewModel.description
         cell.locationLabel.text = viewModel.location
-        cell.feedImageView.image = nil
-        
-        viewModel.onImageLoadingStateChange = { [weak cell] isLoading in
-            cell?.locationContainer.isShimmering = isLoading
-        }
-        viewModel.onImageLoad = { [weak cell] in
-            cell?.feedImageView.image = $0
-        }
-        viewModel.onShouldRetryImageLoadStateChanged = { [weak cell] shouldRetry in
-            cell?.retryButton.isHidden = !shouldRetry
-        }
-        cell.onRetry = viewModel.loadImage
-        return cell
+        cell.feedImageView.image = viewModel.image
+        cell.retryButton.isHidden = !viewModel.shouldRetry
+        cell.locationContainer.isShimmering = viewModel.isLoading
+        cell.onRetry = delegate.didRequestImage
     }
     
     func preload() {
-        viewModel.loadImage()
+        delegate.didRequestImage()
     }
     
     func cancelTask() {
-        viewModel.cancelImageLoading()
+        delegate.didCancelImageRequest()
     }
     
 }

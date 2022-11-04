@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FeedRefreshController: NSObject, FeedLoadingView {
+final class FeedRefreshController: NSObject, FeedLoadingView {
     private(set) lazy var view = loadView()
 
     private let loadFeed: () -> Void
