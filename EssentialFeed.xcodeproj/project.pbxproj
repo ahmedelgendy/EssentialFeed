@@ -401,6 +401,7 @@
 		AFD26B4A290D77F40091E9B3 /* EssentialFeediOSTests */ = {
 			isa = PBXGroup;
 			children = (
+				AFE3C8F0291541F400992A73 /* Feed Presentation */,
 				AFE3C8E429153EE000992A73 /* Feed UI */,
 				AFD26B54290D82380091E9B3 /* EssentialFeediOSTests-Bridging-Header.h */,
 			);
@@ -467,6 +468,13 @@
 				AFE3C8EE2915416200992A73 /* FeedViewController+Helpers.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		AFE3C8F0291541F400992A73 /* Feed Presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Feed Presentation";
 			sourceTree = "<group>";
 		};
 		AFFF6042291055E70038E241 /* Views */ = {
