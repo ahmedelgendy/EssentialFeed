@@ -1,16 +1,17 @@
 //
-//  FeedViewControllerTests.swift
+//  FeedUIIntegrationTests.swift
 //  EssentialFeediOSTests
 //
 //  Created by Ahmed Elgendy on 29.10.2022.
 //
+
 import Foundation
 import XCTest
 import UIKit
 import EssentialFeed
 import EssentialFeediOS
 
-final class FeedViewControllerTests: XCTestCase {
+final class FeedUIIntegrationTests: XCTestCase {
     
     func test_feedView_hasTitle() {
         let (sut, _) = makeSUT()
@@ -338,117 +339,4 @@ final class FeedViewControllerTests: XCTestCase {
         return UIImage.make(withColor: .cyan).pngData()!
     }
     
-}
-
-private extension FeedViewController {
-    func simulateFeedReload() {
-        refreshControl?.simulatePullToRefresh()
-    }
-    
-    var isShowingLoadingIndicator: Bool {
-        refreshControl?.isRefreshing == true
-    }
-    
-    func numberOfRenferedFeedImageViews() -> Int {
-        tableView.numberOfRows(inSection: feedImagesSection)
-    }
-    
-    func feedImageView(at index: Int) -> FeedImageCell? {
-        let dataSource = tableView.dataSource
-        let indexPath = IndexPath(item: index, section: feedImagesSection)
-        return dataSource?.tableView(tableView, cellForRowAt: indexPath) as? FeedImageCell
-    }
-    
-    @discardableResult
-    func simulateFeedImageViewVisible(at index: Int) -> FeedImageCell? {
-        return feedImageView(at: index)
-    }
-    
-    @discardableResult
-    func simulateFeedImageViewInVisible(at index: Int) -> FeedImageCell? {
-        let cell = simulateFeedImageViewVisible(at: index)!
-        let delegate = tableView.delegate
-        let indexPath = IndexPath(item: index, section: feedImagesSection)
-        delegate?.tableView?(tableView, didEndDisplaying: cell, forRowAt: indexPath)
-        return cell
-    }
-    
-    func simulateFeedImageViewNearVisible(at index: Int) {
-        let prefetch = tableView.prefetchDataSource
-        prefetch?.tableView(tableView, prefetchRowsAt: [IndexPath(item: index, section: feedImagesSection)])
-    }
-    
-    func simulateFeedImageViewNearInVisible(at index: Int) {
-        let prefetch = tableView.prefetchDataSource
-        prefetch?.tableView?(tableView, cancelPrefetchingForRowsAt: [IndexPath(item: index, section: feedImagesSection)])
-    }
-    
-    private var feedImagesSection: Int {
-        return 0
-    }
-}
-
-
-extension FeedImageCell {
-    
-    var renderedImage: Data? {
-        return feedImageView.image?.pngData()
-    }
-    
-    var isShowingLocation: Bool {
-        !locationContainer.isHidden
-    }
-    
-    var isShowingImageLoadingIndicator: Bool {
-        return locationContainer.isShimmering
-    }
-    
-    var descriptionText: String? {
-        descriptionLabel.text
-    }
-    
-    var locationText: String? {
-        locationLabel.text
-    }
-    
-    var isShowingRetryButton: Bool {
-        retryButton.isHidden == false
-    }
-    
-    func simulateRetryButtonTapped() {
-        retryButton.simulateButtonTapped()
-    }
-}
-
-private extension UIButton {
-    func simulateButtonTapped() {
-        allTargets.forEach { target in
-            actions(forTarget: target, forControlEvent: .touchUpInside)?.forEach {
-                (target as NSObject).perform(Selector($0))
-            }
-        }
-    }
-}
-
-private extension UIRefreshControl {
-    func simulatePullToRefresh() {
-        allTargets.forEach { target in
-            actions(forTarget: target, forControlEvent: .valueChanged)?.forEach {
-                (target as NSObject).perform(Selector($0))
-            }
-        }
-    }
-}
-
-private extension UIImage {
-    static func make(withColor color: UIColor) -> UIImage {
-        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()!
-        context.setFillColor(color.cgColor)
-        context.fill(rect)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img!
-    }
 }
