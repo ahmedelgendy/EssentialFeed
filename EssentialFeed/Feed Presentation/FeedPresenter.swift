@@ -21,8 +21,13 @@ public class FeedPresenter {
     private let errorView: FeedErrorView
     private let loadingView: FeedLoadingView
     private let feedView: FeedView
+    
+    public static var title: String {
+        NSLocalizedString("FEED_VIEW_TITLE", tableName: "Feed", bundle: Bundle(for: FeedPresenter.self), comment: "Title for my feed")
+    }
+    
     var errorMessage: String {
-        NSLocalizedString("FEED_VIEW_CONNECTION_ERROR", tableName: "Feed", bundle: Bundle(for: FeedPresenter.self), comment: "Title for my feed")
+        NSLocalizedString("FEED_VIEW_CONNECTION_ERROR", tableName: "Feed", bundle: Bundle(for: FeedPresenter.self), comment: "Error Message")
     }
     
     public init(feedView: FeedView, loadingView: FeedLoadingView, errorView: FeedErrorView) {
