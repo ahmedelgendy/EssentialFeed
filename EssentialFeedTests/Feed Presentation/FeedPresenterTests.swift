@@ -34,6 +34,11 @@ protocol FeedErrorView {
 class FeedPresenter {
     private let errorView: FeedErrorView
     private let loadingView: FeedLoadingView
+    
+    var errorMessage: String {
+        NSLocalizedString("FEED_VIEW_CONNECTION_ERROR", tableName: "Feed", bundle: Bundle(for: FeedPresenter.self), comment: "Title for my feed")
+    }
+    
     init(loadingView: FeedLoadingView, errorView: FeedErrorView) {
         self.errorView = errorView
         self.loadingView = loadingView
@@ -43,6 +48,12 @@ class FeedPresenter {
         errorView.display(.noError)
         loadingView.display(FeedLoadingViewModel(isLoading: true))
     }
+    
+    func didFinishLoading(with error: Error) {
+        errorView.display(.error(message: errorMessage))
+        loadingView.display(FeedLoadingViewModel(isLoading: false))
+    }
+    
 }
 
 class FeedPresenterTests: XCTestCase {
@@ -55,7 +66,19 @@ class FeedPresenterTests: XCTestCase {
     func test_didStartLoadingFeed_doesNotDisplayErrorAndStartLoading() {
         let (sut, view) = makeSUT()
         sut.didStartLoadingFeed()
-        XCTAssertEqual(view.messages, [.display(errorMessage: nil), .display(isLoading: true)])
+        XCTAssertEqual(view.messages, [
+            .display(errorMessage: nil),
+            .display(isLoading: true)
+        ])
+    }
+    
+    func test_didFinishLoading_displaysErrorAndEndLoading() {
+        let (sut, view) = makeSUT()
+        sut.didFinishLoading(with: anyNSError())
+        XCTAssertEqual(view.messages, [
+            .display(errorMessage: localized("FEED_VIEW_CONNECTION_ERROR")),
+            .display(isLoading: false)
+        ])
     }
     
     // MARK: Helper Methods
@@ -83,6 +106,15 @@ class FeedPresenterTests: XCTestCase {
             messages.insert(.display(isLoading: viewModel.isLoading))
         }
         
+    }
+    
+    private func localized(_ key: String, file: StaticString = #filePath, line: UInt = #line) -> String {
+        let bundle = Bundle(for: FeedPresenter.self)
+        let title = bundle.localizedString(forKey: key, value: nil, table: "Feed")
+        if title == key {
+            XCTFail("No localized value found for \(key)", file: file, line: line)
+        }
+        return title
     }
     
 }
