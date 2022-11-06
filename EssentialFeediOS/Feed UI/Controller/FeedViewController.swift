@@ -30,7 +30,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         delegate?.didRequestFeedRefresh()
     }
     
-    func display(_ viewModel: FeedLoadingViewModel) {
+    public func display(_ viewModel: FeedLoadingViewModel) {
         if viewModel.isLoading {
             refreshControl?.beginRefreshing()
         } else {
@@ -38,12 +38,11 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         }
     }
     
-    func display(_ viewModel: FeedErrorViewModel) {
-        switch viewModel {
-        case .noError:
-            errorView?.hideMessage()
-        case .error(let message):
+    public func display(_ viewModel: FeedErrorViewModel) {
+        if let message = viewModel.message {
             errorView?.show(message: message)
+        } else {
+            errorView?.hideMessage()
         }
     }
     

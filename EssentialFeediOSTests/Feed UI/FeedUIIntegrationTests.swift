@@ -19,7 +19,7 @@ final class FeedUIIntegrationTests: XCTestCase {
     }
     
     func localized(_ key: String, file: StaticString = #filePath, line: UInt = #line) -> String {
-        let bundle = Bundle(for: FeedViewController.self)
+        let bundle = Bundle(for: FeedPresenter.self)
         let title = bundle.localizedString(forKey: key, value: nil, table: "Feed")
         if title == key {
             XCTFail("No localized value found for \(key)", file: file, line: line)
