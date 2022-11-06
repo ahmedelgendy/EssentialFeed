@@ -10,3 +10,8 @@ import Foundation
 struct FeedLoadingViewModel {
     let isLoading: Bool
 }
+
+enum FeedErrorViewModel {
+    case noError
+    case error(message: String)
+}

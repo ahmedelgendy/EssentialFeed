@@ -1,2 +1,10 @@
+/* 
+  Feed.strings
+  EssentialFeed
+
+  Created by Ahmed Elgendy on 6.11.2022.
+  
+*/
+
 "FEED_VIEW_TITLE" = "موجزي";
 "FEED_VIEW_CONNECTION_ERROR" = "لم يتمكن من الوصول للسيرفر";

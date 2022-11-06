@@ -9,6 +9,15 @@ import Foundation
 import EssentialFeediOS
 
 extension FeedViewController {
+    
+    var errorMessage: String? {
+        errorView.message
+    }
+    
+    func simulateErrorViewTapping() {
+        errorView.button.simulateButtonTapped()
+    }
+    
     func simulateFeedReload() {
         refreshControl?.simulatePullToRefresh()
     }

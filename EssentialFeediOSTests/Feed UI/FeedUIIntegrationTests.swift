@@ -279,6 +279,40 @@ final class FeedUIIntegrationTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_feedView_showsErrorMessageOnLoadFailure() {
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeFeedLoadingWithError()
+        XCTAssertEqual(sut.errorMessage, localized("FEED_VIEW_CONNECTION_ERROR"))
+    }
+
+    func test_feedView_hidesShownErrorViewOnFeedReload() {
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeFeedLoadingWithError()
+        XCTAssertNotNil(sut.errorMessage)
+
+        sut.simulateFeedReload()
+        XCTAssertNil(sut.errorMessage)
+
+        loader.completeFeedLoadingWithError()
+        XCTAssertNotNil(sut.errorMessage)
+    }
+
+    func test_errorView_hidesItselfOnTapping() {
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeFeedLoadingWithError()
+        XCTAssertNotNil(sut.errorMessage)
+
+        sut.simulateErrorViewTapping()
+
+        XCTAssertNil(sut.errorMessage)
+    }
+
     // MARK: Helper Methods
     
     private func assertThat(_ sut: FeedViewController, isRenderring images: [FeedImage], file: StaticString = #filePath, line: UInt = #line) {
@@ -327,7 +361,7 @@ final class FeedUIIntegrationTests: XCTestCase {
             feedRequests[index](.success(feed))
         }
         
-        func completeFeedLoadingWithError(at index: Int) {
+        func completeFeedLoadingWithError(at index: Int = 0) {
             let error = NSError(domain: "any domain", code: 0)
             feedRequests[index](.failure(error))
         }
