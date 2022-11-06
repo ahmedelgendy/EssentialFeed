@@ -449,7 +449,6 @@
 		AFD26B4A290D77F40091E9B3 /* EssentialFeediOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				AFE3C8F0291541F400992A73 /* Feed Presentation */,
 				AFE3C8E429153EE000992A73 /* Feed UI */,
 				AFD26B54290D82380091E9B3 /* EssentialFeediOSTests-Bridging-Header.h */,
 			);
@@ -518,13 +517,6 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		AFE3C8F0291541F400992A73 /* Feed Presentation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Feed Presentation";
-			sourceTree = "<group>";
-		};
 		AFFF6042291055E70038E241 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -551,7 +543,6 @@
 			isa = PBXGroup;
 			children = (
 				AFFF604C2911701A0038E241 /* Composers */,
-				AFFF604F291183230038E241 /* Presentation */,
 				AFFF6043291055F20038E241 /* Controller */,
 				AFFF6042291055E70038E241 /* Views */,
 			);
@@ -577,13 +568,6 @@
 				AFE3C8FB2915C39200992A73 /* WeakRefProxy.swift */,
 			);
 			path = Composers;
-			sourceTree = "<group>";
-		};
-		AFFF604F291183230038E241 /* Presentation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Presentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
