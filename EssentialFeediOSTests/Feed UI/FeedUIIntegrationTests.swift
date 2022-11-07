@@ -345,7 +345,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         return (controller, loader)
     }
     
-    class LoaderSpy: FeedLoader, FeedImageLoaderDataLoader {
+    class LoaderSpy: FeedLoader, FeedImageDataLoader {
         
         // MARK - FeedLoader
         
@@ -370,7 +370,7 @@ final class FeedUIIntegrationTests: XCTestCase {
         var loadedImagesURL: [URL] {
             imageLoadingRequests.map(\.url)
         }
-        private(set) var imageLoadingRequests = [(url: URL, result: ((FeedImageLoaderDataLoader.Result) -> Void))]()
+        private(set) var imageLoadingRequests = [(url: URL, result: ((FeedImageDataLoader.Result) -> Void))]()
         private(set) var canceledImageURLs = [URL]()
         struct FeedImageDataLoaderTaskSpy: FeedImageDataLoaderTask {
             var cancelCompletion: () -> ()
@@ -379,7 +379,7 @@ final class FeedUIIntegrationTests: XCTestCase {
             }
             
         }
-        func loadImageData(from url: URL, completion: @escaping (FeedImageLoaderDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
+        func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
             imageLoadingRequests.append((url, completion))
             return FeedImageDataLoaderTaskSpy { [weak self] in
                 self?.canceledImageURLs.append(url)

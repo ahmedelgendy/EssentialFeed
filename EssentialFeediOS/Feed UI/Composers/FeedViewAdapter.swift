@@ -10,9 +10,9 @@ import EssentialFeed
 
 final class FeedViewAdapter: FeedView {
     private weak var controller: FeedViewController?
-    private let imageLoader: FeedImageLoaderDataLoader
+    private let imageLoader: FeedImageDataLoader
     
-    init(controller: FeedViewController, imageLoader: FeedImageLoaderDataLoader) {
+    init(controller: FeedViewController, imageLoader: FeedImageDataLoader) {
         self.controller = controller
         self.imageLoader = imageLoader
     }
