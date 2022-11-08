@@ -5,7 +5,7 @@
 //  Created by Ahmed Elgendy on 7.11.2022.
 //
 
-public final class RemoteFeedImageDataLoader {
+public final class RemoteFeedImageDataLoader: FeedImageDataLoader {
     private let client: HTTPClient
    
     public enum Error: Swift.Error {
