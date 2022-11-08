@@ -32,10 +32,10 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
         XCTAssertEqual(client.requestedURLs, [url, url])
     }
     
-    func test_loadImageDataTwice_deliversErrorOnLoadingError() {
+    func test_loadImageDataFromURL_deliversConnectivityErrorOnClientError() {
         let (sut, client) = makeSut()
         let error = anyNSError()
-        expect(sut, toCompleteWith: .failure(error)) {
+        expect(sut, toCompleteWith: failure(.connectivity)) {
             client.complete(withError: error)
         }
     }
@@ -110,6 +110,10 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
         let sut = RemoteFeedImageDataLoader(client: client)
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return (sut: sut, client: client)
+    }
+    
+    private func failure(_ error: RemoteFeedImageDataLoader.Error) -> FeedImageDataLoader.Result {
+        return .failure(error)
     }
     
     private func expect(_ sut: RemoteFeedImageDataLoader, toCompleteWith expectedResult: FeedImageDataLoader.Result, when action : () -> Void, file: StaticString = #filePath, line: UInt = #line) {
