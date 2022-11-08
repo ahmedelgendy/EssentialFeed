@@ -20,14 +20,14 @@ class RemoteFeedLoaderTests: XCTestCase {
     
     func test_init_doesntRequestDataFromURL() {
         let client = makeSUT().client
-        XCTAssertTrue(client.urls.isEmpty)
+        XCTAssertTrue(client.requestedURLs.isEmpty)
     }
     
     func test_load_requestsDataFromURL() {
         let url = URL(string: "https://google.com")!
         let (sut, client) = makeSUT(url: url)
         sut.load { _ in }
-        XCTAssertEqual(client.urls, [url])
+        XCTAssertEqual(client.requestedURLs, [url])
     }
     
     func test_loadTwice_requestsDataFromURLTwice() {
@@ -35,13 +35,13 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeSUT(url: url)
         sut.load { _ in }
         sut.load { _ in }
-        XCTAssertEqual(client.urls, [url, url])
+        XCTAssertEqual(client.requestedURLs, [url, url])
     }
     
     func test_load_deliversErrorOnClientSide() {
         let (sut, client) = makeSUT()
         expect(sut: sut, completeWith: failure(.connectivity)) {
-            client.complete(with: NSError(domain: "Error", code: 0))
+            client.complete(withError: NSError(domain: "Error", code: 0))
         }
     }
     
@@ -154,36 +154,4 @@ class RemoteFeedLoaderTests: XCTestCase {
         return (sut, client)
     }
     
-    private class HTTPClientSpy: HTTPClient {
-        
-        private struct TaskSpy: HTTPClientTask {
-            func cancel() {
-            }
-        }
-        var messages: [(url: URL, completion: (HTTPClient.Result) -> Void)] = []
-        var urls: [URL] {
-            messages.map(\.url)
-        }
-        var cancelledURLs = [URL]()
-        
-        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
-            messages.append((url, completion))
-            return TaskSpy()
-        }
-        
-        func complete(with error: Error, at index: Int = 0) {
-            messages[index].completion(.failure(error))
-        }
-        
-        func complete(withStatusCode statusCode: Int, data: Data = Data(), at index: Int = 0) {
-            let response = HTTPURLResponse(
-                url: urls[index],
-                statusCode: statusCode,
-                httpVersion: nil,
-                headerFields: nil
-            )!
-            messages[index].completion(.success((data, response)))
-        }
-    }
-
 }

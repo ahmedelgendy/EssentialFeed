@@ -102,7 +102,7 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
         let statusCodes = [199, 201, 300, 400, 500]
         statusCodes.indices.forEach { index in
             expect(sut, toCompleteWith: .failure(error)) {
-                client.complete(withStatusCode: statusCodes[index], data: anyData(), index: index)
+                client.complete(withStatusCode: statusCodes[index], data: anyData(), at: index)
             }
         }
     }
@@ -124,7 +124,7 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
     }
     
     func test_loadImageData_doesNotDeliverResultAfterSUTDeinitalization() {
-        let client = ClientSpy()
+        let client = HTTPClientSpy()
         var sut: RemoteFeedImageDataLoader? = RemoteFeedImageDataLoader(client: client)
         var results = [FeedImageDataLoader.Result]()
         sut?.loadImageData(from: anyURL()) { result in
@@ -136,7 +136,7 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
     }
     
     func test_cancelLoadImageDataURLTask_cancelsClientURLRequest() {
-        let client = ClientSpy()
+        let client = HTTPClientSpy()
         let sut = RemoteFeedImageDataLoader(client: client)
         let url = anyURL()
         let task = sut.loadImageData(from: url) { _ in }
@@ -146,7 +146,7 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
     }
     
     func test_loadImageDataFromURL_doesNotDeliverResultAfterCancellingTask() {
-        let client = ClientSpy()
+        let client = HTTPClientSpy()
         let sut = RemoteFeedImageDataLoader(client: client)
         var results = [FeedImageDataLoader.Result]()
         let task = sut.loadImageData(from: anyURL()) { result in
@@ -161,8 +161,8 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
     
     // MARK: Helper
     
-    private func makeSut(file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteFeedImageDataLoader, client: ClientSpy) {
-        let client = ClientSpy()
+    private func makeSut(file: StaticString = #filePath, line: UInt = #line) -> (sut: RemoteFeedImageDataLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy()
         let sut = RemoteFeedImageDataLoader(client: client)
         trackForMemoryLeak(instance: sut, file: file, line: line)
         return (sut: sut, client: client)
@@ -186,38 +186,4 @@ class RemoteFeedImageDataLoaderTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    private class ClientSpy: HTTPClient {
-        private struct Task: HTTPClientTask {
-            var completion: () -> Void
-            func cancel() {
-                completion()
-            }
-        }
-        var requestedURLs: [URL] {
-            requests.map(\.url)
-        }
-        private var requests = [(url: URL, completion: (HTTPClient.Result) -> Void)]()
-        var cancelledURLs = [URL]()
-        
-        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
-            requests.append((url, completion))
-            return Task { [weak self] in
-                self?.cancelledURLs.append(url)
-            }
-        }
-        
-        func complete(withError error: NSError, index: Int = 0) {
-            requests[index].completion(.failure(error))
-        }
-        
-        func complete(withStatusCode statusCode: Int, data: Data, index: Int = 0) {
-            let response = HTTPURLResponse(
-                url: requests[index].url,
-                statusCode: statusCode,
-                httpVersion: nil,
-                headerFields: nil
-            )!
-            requests[index].completion(.success((data, response)))
-        }
-    }
 }
