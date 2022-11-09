@@ -13,14 +13,14 @@ class LoadFeedImageDataFromCacheUseCaseTests: XCTestCase {
     
     func test_init_doesNotMessageStoreUponCreation() {
         let (_, store) = makeSUT()
-        XCTAssertTrue(store.messages.isEmpty)
+        XCTAssertTrue(store.receivedMessages.isEmpty)
     }
     
     func test_loadImageDataFromURL_requestsStoredDataForURL() {
         let (sut, store) = makeSUT()
         let url = anyURL()
         _ = sut.loadImageData(from: url) { _ in }
-        XCTAssertEqual(store.messages, [.retrieve(dataFor: url)])
+        XCTAssertEqual(store.receivedMessages, [.retrieve(dataFor: url)])
     }
     
     
@@ -78,7 +78,7 @@ class LoadFeedImageDataFromCacheUseCaseTests: XCTestCase {
         let url = anyURL()
         let data = anyData()
         sut.save(data, for: url) { _ in }
-        XCTAssertEqual(store.messages, [.insert(data: data, for: url)])
+        XCTAssertEqual(store.receivedMessages, [.insert(data: data, for: url)])
     }
     
     // MARK: Helpers
