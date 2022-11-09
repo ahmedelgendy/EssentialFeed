@@ -23,7 +23,8 @@ final class LocalFeedImageDataLoader: FeedImageDataLoader {
     
     func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
         let task = Task(completion)
-        store.retrieve(dataForURL: url) { result in
+        store.retrieve(dataForURL: url) { [weak self] result in
+            guard self != nil else { return }
             task.complete(with: result
                 .mapError { _ in Error.failed }
                 .flatMap { data in
@@ -94,7 +95,7 @@ class LoadImageDataFromCacheUseCaseTests: XCTestCase {
     }
     
     func test_loadImageDataFromURL_doesNotDeliverResultAfterCancellingTask() {
-        let store = ImageDataStoreSpy()
+        let store = StoreSpy()
         var sut = LocalFeedImageDataLoader(store: store)
         var results = [FeedImageDataLoader.Result]()
         let task = sut.loadImageData(from: anyURL()) { result in
@@ -105,9 +106,22 @@ class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         XCTAssertTrue(results.isEmpty)
     }
     
+    func test_loadImageDataFromURL_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let store = StoreSpy()
+        var sut: LocalFeedImageDataLoader? = LocalFeedImageDataLoader(store: store)
+        
+        var received = [FeedImageDataLoader.Result]()
+        _ = sut?.loadImageData(from: anyURL()) { received.append($0) }
+        
+        sut = nil
+        store.complete(with: anyData())
+        
+        XCTAssertTrue(received.isEmpty, "Expected no received results after instance has been deallocated")
+    }
+    
     // MARK: Helpers
     
-    class ImageDataStoreSpy: FeedImageDataStore {
+    class StoreSpy: FeedImageDataStore {
         
         enum Message: Equatable {
             case retrieve(dataFor: URL)
@@ -131,8 +145,8 @@ class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         
     }
     
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedImageDataLoader, store: ImageDataStoreSpy) {
-        let store = ImageDataStoreSpy()
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedImageDataLoader, store: StoreSpy) {
+        let store = StoreSpy()
         let sut = LocalFeedImageDataLoader(store: store)
         trackForMemoryLeak(instance: store, file: file, line: line)
         trackForMemoryLeak(instance: sut, file: file, line: line)
