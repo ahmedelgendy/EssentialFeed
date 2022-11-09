@@ -22,19 +22,31 @@ final class LocalFeedImageDataLoader: FeedImageDataLoader {
     }
     
     func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageDataLoaderTask {
+        let task = Task(completion)
         store.retrieve(dataForURL: url) { result in
-            completion(result
+            task.complete(with: result
                 .mapError { _ in Error.failed }
                 .flatMap { data in
                     data.map { .success($0) } ?? .failure(Error.notFound)
                 }
             )
         }
-        return Task()
+        return task
     }
     
-    private struct Task: FeedImageDataLoaderTask {
-        func cancel() {}
+    private class Task: FeedImageDataLoaderTask {
+        private var completion: ((FeedImageDataLoader.Result) -> Void)?
+        init(_ completion: @escaping (FeedImageDataLoader.Result) -> Void) {
+            self.completion = completion
+        }
+        
+        func complete(with result: FeedImageDataLoader.Result) {
+            completion?(result)
+        }
+        
+        func cancel() {
+            completion = nil
+        }
     }
     
     enum Error: Swift.Error {
@@ -79,6 +91,18 @@ class LoadImageDataFromCacheUseCaseTests: XCTestCase {
         expect(sut, toCompleteWith: .success(foundData)) {
             store.complete(with: foundData)
         }
+    }
+    
+    func test_loadImageDataFromURL_doesNotDeliverResultAfterCancellingTask() {
+        let store = ImageDataStoreSpy()
+        var sut = LocalFeedImageDataLoader(store: store)
+        var results = [FeedImageDataLoader.Result]()
+        let task = sut.loadImageData(from: anyURL()) { result in
+            results.append(result)
+        }
+        task.cancel()
+        store.complete(with: Data())
+        XCTAssertTrue(results.isEmpty)
     }
     
     // MARK: Helpers
