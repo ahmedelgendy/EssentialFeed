@@ -47,7 +47,7 @@ class LoadFeedImageDataFromCacheUseCaseTests: XCTestCase {
     }
     
     func test_loadImageDataFromURL_doesNotDeliverResultAfterCancellingTask() {
-        let store = StoreSpy()
+        let store = FeedImageDataStoreSpy()
         let sut = LocalFeedImageDataLoader(store: store)
         var results = [FeedImageDataLoader.Result]()
         let task = sut.loadImageData(from: anyURL()) { result in
@@ -61,7 +61,7 @@ class LoadFeedImageDataFromCacheUseCaseTests: XCTestCase {
     }
     
     func test_loadImageDataFromURL_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
-        let store = StoreSpy()
+        let store = FeedImageDataStoreSpy()
         var sut: LocalFeedImageDataLoader? = LocalFeedImageDataLoader(store: store)
         
         var received = [FeedImageDataLoader.Result]()
@@ -83,38 +83,8 @@ class LoadFeedImageDataFromCacheUseCaseTests: XCTestCase {
     
     // MARK: Helpers
     
-    class StoreSpy: FeedImageDataStore {
-        enum Message: Equatable {
-            case retrieve(dataFor: URL)
-            case insert(data: Data, for: URL)
-        }
-        private var retrievalCompletions = [(FeedImageDataStore.RetrievalResult) -> Void]()
-        private var insertionCompletions = [(FeedImageDataStore.InsertionResult) -> Void]()
-
-        private(set) var messages = [Message]()
-        
-        func retrieve(dataForURL url: URL, completion: @escaping (RetrievalResult) -> Void) {
-            messages.append(.retrieve(dataFor: url))
-            retrievalCompletions.append(completion)
-        }
-        
-        func completeRetrieval(with data: Data?, at index: Int = 0) {
-            retrievalCompletions[index](.success(data))
-        }
-        
-        func completeRetrieval(withError error: Error, at index: Int = 0) {
-            retrievalCompletions[index](.failure(error))
-        }
-        
-        func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void) {
-            messages.append(.insert(data: data, for: url))
-            insertionCompletions.append(completion)
-        }
-        
-    }
-    
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedImageDataLoader, store: StoreSpy) {
-        let store = StoreSpy()
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedImageDataLoader, store: FeedImageDataStoreSpy) {
+        let store = FeedImageDataStoreSpy()
         let sut = LocalFeedImageDataLoader(store: store)
         trackForMemoryLeak(instance: store, file: file, line: line)
         trackForMemoryLeak(instance: sut, file: file, line: line)
