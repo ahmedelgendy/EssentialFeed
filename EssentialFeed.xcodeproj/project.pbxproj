@@ -55,7 +55,7 @@
 		AFBE3BAB291A78F9000B86D1 /* HTTPClientSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BAA291A78F9000B86D1 /* HTTPClientSpy.swift */; };
 		AFBE3BAE291A8D19000B86D1 /* HTTPURLResponse+StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BAD291A8D19000B86D1 /* HTTPURLResponse+StatusCode.swift */; };
 		AFBE3BB0291A8D91000B86D1 /* URLProtocolStub.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BAF291A8D91000B86D1 /* URLProtocolStub.swift */; };
-		AFBE3BB2291BA3E9000B86D1 /* LoadImageDataFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BB1291BA3E9000B86D1 /* LoadImageDataFromCacheUseCaseTests.swift */; };
+		AFBE3BB2291BA3E9000B86D1 /* LoadFeedImageDataFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BB1291BA3E9000B86D1 /* LoadFeedImageDataFromCacheUseCaseTests.swift */; };
 		AFBE3BB4291BC35F000B86D1 /* LocalFeedImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BB3291BC35F000B86D1 /* LocalFeedImageDataLoader.swift */; };
 		AFBE3BB6291BC383000B86D1 /* FeedImageDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFBE3BB5291BC383000B86D1 /* FeedImageDataStore.swift */; };
 		AFD1C47928FD714B000B4D63 /* LoadFeedFromCacheUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD1C47828FD714B000B4D63 /* LoadFeedFromCacheUseCaseTests.swift */; };
@@ -194,7 +194,7 @@
 		AFBE3BAA291A78F9000B86D1 /* HTTPClientSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientSpy.swift; sourceTree = "<group>"; };
 		AFBE3BAD291A8D19000B86D1 /* HTTPURLResponse+StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+StatusCode.swift"; sourceTree = "<group>"; };
 		AFBE3BAF291A8D91000B86D1 /* URLProtocolStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLProtocolStub.swift; sourceTree = "<group>"; };
-		AFBE3BB1291BA3E9000B86D1 /* LoadImageDataFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageDataFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
+		AFBE3BB1291BA3E9000B86D1 /* LoadFeedImageDataFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadFeedImageDataFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
 		AFBE3BB3291BC35F000B86D1 /* LocalFeedImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFeedImageDataLoader.swift; sourceTree = "<group>"; };
 		AFBE3BB5291BC383000B86D1 /* FeedImageDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageDataStore.swift; sourceTree = "<group>"; };
 		AFD1C47828FD714B000B4D63 /* LoadFeedFromCacheUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadFeedFromCacheUseCaseTests.swift; sourceTree = "<group>"; };
@@ -517,7 +517,7 @@
 				AF42E64528FFACD400D24498 /* InvalidateCacheUseCaseTests.swift */,
 				AF42E64B29001FBA00D24498 /* CodableFeedStoreTests.swift */,
 				AF18368629055228003D6B25 /* CoreDataFeedStoreTests.swift */,
-				AFBE3BB1291BA3E9000B86D1 /* LoadImageDataFromCacheUseCaseTests.swift */,
+				AFBE3BB1291BA3E9000B86D1 /* LoadFeedImageDataFromCacheUseCaseTests.swift */,
 			);
 			path = "Feed Store";
 			sourceTree = "<group>";
@@ -892,7 +892,7 @@
 				AF42E64A2900062300D24498 /* CacheFeedUseCaseTests.swift in Sources */,
 				AF18368529040F49003D6B25 /* XCTestCase+FailableDeleteFeedStoreSpecs.swift in Sources */,
 				AF2D328928F8294E0006DB56 /* URLSessionHTTPClientTests.swift in Sources */,
-				AFBE3BB2291BA3E9000B86D1 /* LoadImageDataFromCacheUseCaseTests.swift in Sources */,
+				AFBE3BB2291BA3E9000B86D1 /* LoadFeedImageDataFromCacheUseCaseTests.swift in Sources */,
 				AF2D328C28F8A93A0006DB56 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				AF18367C290402F4003D6B25 /* FeedStoreSpecs.swift in Sources */,
 				AF42E64628FFACD400D24498 /* InvalidateCacheUseCaseTests.swift in Sources */,
