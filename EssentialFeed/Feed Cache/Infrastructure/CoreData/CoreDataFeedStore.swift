@@ -57,7 +57,7 @@ public final class CoreDataFeedStore: FeedStore {
         }
     }
     
-    private func perform(completion: @escaping (NSManagedObjectContext) -> ())  {
+    func perform(completion: @escaping (NSManagedObjectContext) -> ())  {
         let context = self.context
         context.perform {
             completion(context)
