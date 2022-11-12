@@ -8,11 +8,14 @@
 import Foundation
 import EssentialFeed
 
-
 func uniqueImageFeed() -> (models: [FeedImage], local: [LocalFeedImage]) {
     let feed = [uniqueItem(), uniqueItem()]
     let local = feed.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
     return (models: feed, local: local)
+}
+
+func uniqueImage() -> FeedImage {
+    uniqueItem()
 }
 
 func uniqueItem() -> FeedImage {
