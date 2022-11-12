@@ -13,7 +13,7 @@
         <scene sceneID="Cfe-Yr-Wgh">
             <objects>
                 <tableViewController id="2Dn-vH-F42" customClass="FeedViewController" customModule="EssentialFeediOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="dr8-aS-OY3">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="dr8-aS-OY3">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -104,7 +104,7 @@ Location</string>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zje-Zg-bL8" userLabel="FeedImage">
                                                     <rect key="frame" x="0.0" y="59.666666666666686" width="350" height="350"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MVr-xK-nsk">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MVr-xK-nsk">
                                                             <rect key="frame" x="0.0" y="0.0" width="350" height="350"/>
                                                         </imageView>
                                                         <button opaque="NO" contentMode="scaleToFill" highlighted="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jsF-ij-OPh">
@@ -127,7 +127,7 @@ Location</string>
                                                         <constraint firstItem="jsF-ij-OPh" firstAttribute="leading" secondItem="zje-Zg-bL8" secondAttribute="leading" id="H9R-zQ-hN3"/>
                                                         <constraint firstAttribute="trailing" secondItem="jsF-ij-OPh" secondAttribute="trailing" id="HQ1-aR-kMn"/>
                                                         <constraint firstAttribute="bottom" secondItem="MVr-xK-nsk" secondAttribute="bottom" id="Hbz-rQ-pan"/>
-                                                        <constraint firstAttribute="width" secondItem="zje-Zg-bL8" secondAttribute="height" multiplier="1:1" id="XyL-tj-gee"/>
+                                                        <constraint firstAttribute="width" secondItem="zje-Zg-bL8" secondAttribute="height" multiplier="1:1" priority="999" id="XyL-tj-gee"/>
                                                         <constraint firstItem="jsF-ij-OPh" firstAttribute="top" secondItem="zje-Zg-bL8" secondAttribute="top" id="f6e-OY-ENr"/>
                                                         <constraint firstItem="MVr-xK-nsk" firstAttribute="leading" secondItem="zje-Zg-bL8" secondAttribute="leading" id="kc6-Wk-RvU"/>
                                                     </constraints>
