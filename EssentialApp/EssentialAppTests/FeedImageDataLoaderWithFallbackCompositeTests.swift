@@ -151,16 +151,4 @@ class FeedImageDataLoaderWithFallbackCompositeTests: XCTestCase {
             }
         }
     }
-    
-    private func anyURL() -> URL {
-        return URL(string: "https://any-url.com")!
-    }
-    
-    private func anyNSError() -> NSError {
-        return NSError(domain: "any error", code: 1)
-    }
-    
-    func anyData() -> Data {
-        return Data("any data".utf8)
-    }
 }
