@@ -20,5 +20,101 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A76F382D-F580-4D1D-A633-BF11B52F0CEC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "loadImageData(from:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A76F382D-F580-4D1D-A633-BF11B52F0CEC - 928c48212ac1ca0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; () in EssentialAppTests.FeedImageDataLoaderWithFallbackComposite.loadImageData(from: Foundation.URL, completion: (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; ()) -&gt; EssentialFeed.FeedImageDataLoaderTask"
+                  moduleName = "EssentialAppTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "516">
+               </Location>
+               <Location
+                  uuid = "A76F382D-F580-4D1D-A633-BF11B52F0CEC - 7364fd589e5aa2ce"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; () in closure #1 (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; () in EssentialAppTests.FeedImageDataLoaderWithFallbackComposite.loadImageData(from: Foundation.URL, completion: (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; ()) -&gt; EssentialFeed.FeedImageDataLoaderTask"
+                  moduleName = "EssentialAppTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "30">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FF50D9A1-86F3-48F4-AB20-310CC9B04292"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "cancel()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FF50D9A1-86F3-48F4-AB20-310CC9B04292 - 39b68bf2e46dc3ee"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in EssentialAppTests.FeedImageDataLoaderWithFallbackCompositeTests.LoaderSpy.loadImageData(from: Foundation.URL, completion: (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; ()) -&gt; EssentialFeed.FeedImageDataLoaderTask"
+                  moduleName = "EssentialAppTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "120"
+                  endingLineNumber = "120"
+                  offsetFromSymbolStart = "301">
+               </Location>
+               <Location
+                  uuid = "FF50D9A1-86F3-48F4-AB20-310CC9B04292 - 31de010ac01da582"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EssentialAppTests.FeedImageDataLoaderWithFallbackCompositeTests.LoaderSpy.Task.cancel() -&gt; ()"
+                  moduleName = "EssentialAppTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/elgendy/Desktop/Lead%20Essentials/Code/EssentialFeed/EssentialApp/EssentialAppTests/FeedImageDataLoaderWithFallbackCompositeTests.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "130"
+                  endingLineNumber = "130"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
