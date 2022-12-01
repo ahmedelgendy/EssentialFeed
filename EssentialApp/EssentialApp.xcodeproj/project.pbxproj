@@ -35,6 +35,7 @@
 		AF209FF52938DDF200697E12 /* UIButton+SimulateTapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF209FF42938DDF200697E12 /* UIButton+SimulateTapping.swift */; };
 		AF209FF72938DDFB00697E12 /* UIRefreshControl+SimulatePulling.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF209FF62938DDFB00697E12 /* UIRefreshControl+SimulatePulling.swift */; };
 		AF209FF92938DE6900697E12 /* UIImage+makeImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF209FF82938DE6900697E12 /* UIImage+makeImage.swift */; };
+		AF209FFB2938E8D700697E12 /* FeedAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF209FFA2938E8D700697E12 /* FeedAcceptanceTests.swift */; };
 		AFC9440B29269DE6002871D0 /* FeedLoaderWithFallbackComposite.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC9440A29269DE6002871D0 /* FeedLoaderWithFallbackComposite.swift */; };
 		AFC9440D2926A3F1002871D0 /* FeedImageDataLoaderWithFallbackCompositeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC9440C2926A3F1002871D0 /* FeedImageDataLoaderWithFallbackCompositeTests.swift */; };
 		AFC9440F2926B9CD002871D0 /* FeedImageDataLoaderWithFallbackComposite.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC9440E2926B9CD002871D0 /* FeedImageDataLoaderWithFallbackComposite.swift */; };
@@ -105,6 +106,7 @@
 		AF209FF42938DDF200697E12 /* UIButton+SimulateTapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+SimulateTapping.swift"; sourceTree = "<group>"; };
 		AF209FF62938DDFB00697E12 /* UIRefreshControl+SimulatePulling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+SimulatePulling.swift"; sourceTree = "<group>"; };
 		AF209FF82938DE6900697E12 /* UIImage+makeImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+makeImage.swift"; sourceTree = "<group>"; };
+		AF209FFA2938E8D700697E12 /* FeedAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedAcceptanceTests.swift; sourceTree = "<group>"; };
 		AFC9440A29269DE6002871D0 /* FeedLoaderWithFallbackComposite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderWithFallbackComposite.swift; sourceTree = "<group>"; };
 		AFC9440C2926A3F1002871D0 /* FeedImageDataLoaderWithFallbackCompositeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageDataLoaderWithFallbackCompositeTests.swift; sourceTree = "<group>"; };
 		AFC9440E2926B9CD002871D0 /* FeedImageDataLoaderWithFallbackComposite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageDataLoaderWithFallbackComposite.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				AF209FD6292E6FAF00697E12 /* FeedImageDataLoaderCacheDecoratorTests.swift */,
 				AF209FE02938CADC00697E12 /* SceneDelegateTests.swift */,
 				AF209FEE2938DD9D00697E12 /* FeedUIIntegrationTests.swift */,
+				AF209FFA2938E8D700697E12 /* FeedAcceptanceTests.swift */,
 			);
 			path = EssentialAppTests;
 			sourceTree = "<group>";
@@ -374,6 +377,7 @@
 				AF209FD1292E65AF00697E12 /* XCTestCase+FeedLoader.swift in Sources */,
 				AF209FF32938DDE300697E12 /* FeedImageCell+Helpers.swift in Sources */,
 				AF209FDB292E709000697E12 /* XCTestCase+FeedImageDataLoader.swift in Sources */,
+				AF209FFB2938E8D700697E12 /* FeedAcceptanceTests.swift in Sources */,
 				AF209FEF2938DD9D00697E12 /* FeedUIIntegrationTests.swift in Sources */,
 				AF209FE12938CADC00697E12 /* SceneDelegateTests.swift in Sources */,
 				AF209FCD292E62CC00697E12 /* FeedLoaderCacheDecoratorTests.swift in Sources */,

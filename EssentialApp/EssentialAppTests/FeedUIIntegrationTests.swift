@@ -317,8 +317,8 @@ final class FeedUIIntegrationTests: XCTestCase {
     // MARK: Helper Methods
     
     private func assertThat(_ sut: FeedViewController, isRenderring images: [FeedImage], file: StaticString = #filePath, line: UInt = #line) {
-        guard sut.numberOfRenferedFeedImageViews() == images.count else {
-            return XCTFail("Expected images count to be \(images.count), found \(sut.numberOfRenferedFeedImageViews()) instead", file: file, line: line)
+        guard sut.numberOfRenderedFeedImageViews() == images.count else {
+            return XCTFail("Expected images count to be \(images.count), found \(sut.numberOfRenderedFeedImageViews()) instead", file: file, line: line)
         }
         images.enumerated().forEach { (index, image) in
             assertThat(sut, hasViewConfiguredFor: image, at: index, file: file, line: line)
