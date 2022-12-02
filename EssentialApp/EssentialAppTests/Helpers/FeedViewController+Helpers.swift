@@ -18,7 +18,7 @@ extension FeedViewController {
         errorView.button.simulateButtonTapped()
     }
     
-    func simulateFeedReload() {
+    func simulateUserInitiatedFeedReload() {
         refreshControl?.simulatePullToRefresh()
     }
     
