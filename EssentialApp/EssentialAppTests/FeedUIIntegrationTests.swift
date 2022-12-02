@@ -317,6 +317,7 @@ final class FeedUIIntegrationTests: XCTestCase {
     // MARK: Helper Methods
     
     private func assertThat(_ sut: FeedViewController, isRenderring images: [FeedImage], file: StaticString = #filePath, line: UInt = #line) {
+        sut.view.enforceLayoutCycle()
         guard sut.numberOfRenderedFeedImageViews() == images.count else {
             return XCTFail("Expected images count to be \(images.count), found \(sut.numberOfRenderedFeedImageViews()) instead", file: file, line: line)
         }
