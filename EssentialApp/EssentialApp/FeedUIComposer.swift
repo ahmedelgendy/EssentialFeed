@@ -18,10 +18,10 @@ public final class FeedUIComposer {
         feedLoader: @escaping () -> FeedLoader.Publisher,
         imageLoader: @escaping (URL) -> FeedImageDataLoader.Publisher
     ) -> FeedViewController {
-        let feedLoaderAdapter = FeedLoaderPresentationAdapter(feedLoader: { feedLoader().dispatchOnMainThread() })
+        let feedLoaderAdapter = FeedLoaderPresentationAdapter(feedLoader: feedLoader)
         let feedViewController = instantiateFeedViewController(with: feedLoaderAdapter, title: FeedPresenter.title)
         let feedPresenter = FeedPresenter(
-            feedView: FeedViewAdapter(controller: feedViewController, imageLoader: { imageLoader($0).dispatchOnMainThread() }), loadingView: WeakRefProxy(feedViewController), errorView: WeakRefProxy(feedViewController)
+            feedView: FeedViewAdapter(controller: feedViewController, imageLoader: imageLoader), loadingView: WeakRefProxy(feedViewController), errorView: WeakRefProxy(feedViewController)
         )
         feedLoaderAdapter.presenter = feedPresenter
         return feedViewController

@@ -178,11 +178,9 @@
 				AF209FE32938DA1B00697E12 /* FeedViewAdapter.swift */,
 				AF209FE52938DA1C00697E12 /* FeedLoaderPresentationAdapter.swift */,
 				AF209FE42938DA1C00697E12 /* FeedImageDataLoaderPresentationAdapter.swift */,
-				AF209FE62938DA1C00697E12 /* MainQueueDispatchDecorator.swift */,
 				AF209FE72938DA1C00697E12 /* WeakRefProxy.swift */,
-				AFC9440A29269DE6002871D0 /* FeedLoaderWithFallbackComposite.swift */,
-				AFC9440E2926B9CD002871D0 /* FeedImageDataLoaderWithFallbackComposite.swift */,
 				AFB5D7BD293E1F4000357B23 /* CombineHelpers.swift */,
+				AFB5D7BF293E1FF300357B23 /* Legacy */,
 				AF152872291FB8CE0078B53C /* Assets.xcassets */,
 				AF152874291FB8CE0078B53C /* LaunchScreen.storyboard */,
 				AF152877291FB8CE0078B53C /* Info.plist */,
@@ -212,6 +210,16 @@
 				AF15289B291FBA5A0078B53C /* EssentialFeediOS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AFB5D7BF293E1FF300357B23 /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
+				AFC9440E2926B9CD002871D0 /* FeedImageDataLoaderWithFallbackComposite.swift */,
+				AFC9440A29269DE6002871D0 /* FeedLoaderWithFallbackComposite.swift */,
+				AF209FE62938DA1C00697E12 /* MainQueueDispatchDecorator.swift */,
+			);
+			path = Legacy;
 			sourceTree = "<group>";
 		};
 		AFC944102926BA32002871D0 /* Helpers */ = {
