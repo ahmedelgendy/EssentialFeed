@@ -11,9 +11,9 @@ import EssentialFeediOS
 
 final class FeedViewAdapter: FeedView {
     private weak var controller: FeedViewController?
-    private let imageLoader: FeedImageDataLoader
+    private let imageLoader: (URL) -> FeedImageDataLoader.Publisher
     
-    init(controller: FeedViewController, imageLoader: FeedImageDataLoader) {
+    init(controller: FeedViewController, imageLoader: @escaping (URL) -> FeedImageDataLoader.Publisher) {
         self.controller = controller
         self.imageLoader = imageLoader
     }
@@ -22,7 +22,7 @@ final class FeedViewAdapter: FeedView {
         controller?.display(viewModel.feed.map { image in
             let adapter = FeedImageDataLoaderPresentationAdapter<WeakRefProxy<FeedImageCellController>, UIImage>(
                 model: image,
-                imageLoader: MainQueueDispatchDecorator(decoratee: imageLoader)
+                imageLoader: imageLoader
             )
             let view = FeedImageCellController(delegate: adapter)
             adapter.presenter = FeedImagePresenter<WeakRefProxy<FeedImageCellController>, UIImage>(
